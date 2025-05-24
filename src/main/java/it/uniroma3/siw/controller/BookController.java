@@ -21,9 +21,11 @@ import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
 import jakarta.validation.Valid;
 
-/* riceve la richiesta HTTP, ed in base a questa interagisce con il Service e decide che risposta dare al server.
-Ogni entità ha un Controller, che offre tutte le operazioni che vengono esposte per quella determinata entità.
-Ogni metodo della classe risponde ad una richiesta HTTP come GET o POST, mappata con l'uso di annotazioni come @GetMapping */
+// Il Controller riceve la richiesta HTTP, ed in base a questa interagisce con
+// il Service e decide che risposta dare al server. Ogni entità ha un
+// Controller, che offre tutte le operazioni che vengono esposte per quella
+// determinata entità. Ogni metodo della classe risponde ad una richiesta HTTP
+// come GET o POST, mappata con l'uso di annotazioni come @GetMapping
 @Controller
 public class BookController {
 	@Autowired
@@ -41,10 +43,6 @@ public class BookController {
 		});
 	}
 
-	// La pagina iniziale mostra una descrizione del sito, un link a tutti i libri,
-	// uno a tutti gli autori, uno per aggiungere un nuovo libro, uno per aggiungere
-	// un nuovo autore, ed infine un link per modificare o rimuovere libri o autori
-	// già esistenti
 	@GetMapping("/")
 	public String index(Model model) {
 		return "index.html";

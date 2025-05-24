@@ -101,7 +101,7 @@ public class AuthorController {
 		Author author = this.authorService.getAuthorById(authorId);
 		List<Book> allBooks = (List<Book>) this.bookService.getAllBooks();
 
-		// Filtra i libri non ancora associati all'autore
+		// Filtra solo i libri non già associati all'autore
 		List<Book> availableBooks = allBooks.stream()
 				.filter(book -> !author.getBooks().contains(book))
 				.toList();
