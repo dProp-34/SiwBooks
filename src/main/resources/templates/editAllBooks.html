@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>SIW - Gestisci libri</title>
+  <link rel="stylesheet" href="stile.css" />
+</head>
+
+<body>
+  <div th:replace="fragments.html :: siteHeader"></div>
+  <h1 th:if="${allBooks.isEmpty()}">Non sono presenti libri nel sistema.</h1>
+
+  <ul class="book-list">
+    <li th:each="b : ${allBooks}">
+      <a th:href="@{'/editBook/' + ${b.bookId}}" class="book-item">
+        <img class="book-cover" th:src="${b.imageUrls[0]}" alt="Copertina libro" />
+        <div class="book-details">
+          <span class="book-title" th:text="${b.title}">Titolo</span>
+          <span class="book-meta" th:text="${b.year+', '+b.authors[0].name}">2000, Autore</span>
+          <a th:href="@{'/editBook/' + ${b.bookId}}">Modifica</a>
+          <a th:href="@{'/editBook/' + ${b.bookId} + '/delete'}">Cancella</a>
+        </div>
+      </a>
+    </li>
+  </ul>
+</body>
+
+</html>

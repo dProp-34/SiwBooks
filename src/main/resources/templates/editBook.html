@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>SIW - Modifica libro</title>
+	<link rel="stylesheet" href="stile.css" />
+</head>
+
+<body>
+	<div th:replace="fragments.html :: siteHeader"></div>
+
+	<div th:if="${currBook}">
+		<!-- Info Libro -->
+		<div class="book-details">
+			<span class="book-title" th:text="${currBook.title}">Titolo</span>
+			<span class="book-meta" th:text="${'Pubblicato nel: '+currBook.year}">Pubblicato nel: 2000</span>
+		</div>
+
+		<!-- Foto libro -->
+		<div th:each="img : ${currBook.imageUrls}">
+			<img class="book-cover" th:src="${img}" alt="Copertina libro" />
+		</div>
+
+		<!-- Elenco autori -->
+		<div>
+			<h2>Scritto da:</h2>
+			<ul class="book-list">
+				<li th:each="a : ${currBook.authors}">
+					<a th:href="@{'/editAuthor/' + ${a.authorId}}" class="book-item">
+						<img class="book-cover" th:src="${a.photoUrl}" alt="Foto Autore" />
+						<div class="book-details">
+							<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
+							<span class="book-meta">
+								<span th:text="${'Nazionalità: '+ a.nationality}">Nazionalità:</span>
+								<span th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
+									Data di nascita:</span>
+							</span>
+							<a
+								th:href="@{'/editBook/' + ${currBook.bookId} + '/removeAuthor/' + ${a.authorId}}">Rimuovi</a>
+						</div>
+					</a>
+				</li>
+				<a th:href="@{'/editBook/' + ${currBook.bookId} + '/selectAuthor'}">Aggiungi autore</a>
+			</ul>
+		</div>
+
+	</div>
+	<h1 th:unless="${currBook}">Il libro non è presente nel sistema.</h1>
+</body>
+
+</html>

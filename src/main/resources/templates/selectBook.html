@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>SIW - Seleziona Libro</title>
+	<link rel="stylesheet" href="stile.css" />
+</head>
+
+<body>
+	<div th:replace="fragments.html :: siteHeader"></div>
+	<h1>Seleziona un libro da aggiungere:</h1>
+
+	<div th:if="${availableBooks != null and #lists.isEmpty(availableBooks) == false}">
+		<ul>
+			<li th:each="book : ${availableBooks}">
+				<span th:text="${book.title+', '+book.year}">Titolo, 2000</span>
+				<!-- Pulsante per aggiungere il libro all'autore -->
+				<form th:action="@{'/editAuthor/' + ${authorId} + '/addBook/' + ${book.bookId}}" method="post"
+					style="display:inline;">
+					<button type="submit">Aggiungi</button>
+				</form>
+			</li>
+		</ul>
+	</div>
+
+	<div th:if="${availableBooks == null or #lists.isEmpty(availableBooks)}">
+		<p>Nessun libro disponibile.</p>
+	</div>
+	<p><a th:href="@{'/editAuthor/' + ${authorId}}">Torna indietro</a></p>
+
+</body>
+
+</html>

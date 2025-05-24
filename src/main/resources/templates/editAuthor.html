@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>SIW - Modifica autore</title>
+	<link rel="stylesheet" href="stile.css" />
+</head>
+
+<body>
+	<div th:replace="fragments.html :: siteHeader"></div>
+	<div th:if="${currAuthor}">
+		<div class="book-item">
+
+			<!-- Foto autore -->
+			<img class="book-cover" th:src="${currAuthor.photoUrl}" alt="Foto autore" />
+
+			<!-- Info autore -->
+			<div class="book-details">
+				<span class="book-title" th:text="${currAuthor.name + ' ' + currAuthor.surname}">Nome Cognome</span>
+				<!-- span class="book-meta" -->
+				<span th:text="${'Nazionalità: '+ currAuthor.nationality}">Nazionalità:</span>
+				<span th:text="${'Data di nascita: '+ #temporals.format(currAuthor.dateOfBirth, 'dd/MM/yyyy')}">
+					Data di nascita:</span>
+				<span th:if="${currAuthor.dateOfDeath != null}"
+					th:text="${'Data di morte: '+ #temporals.format(currAuthor.dateOfDeath, 'dd/MM/yyyy')}">
+					Data di morte:</span>
+			</div>
+		</div>
+
+		<!-- Elenco libri -->
+		<div>
+			<h2>Libri pubblicati:</h2>
+			<ul class="book-list">
+				<li th:each="b : ${currAuthor.books}">
+					<a th:href="@{'/editBook/' + ${b.bookId}}" class="book-item">
+						<img class="book-cover" th:src="${b.imageUrls[0]}" alt="Copertina libro" />
+						<div class="book-details">
+							<span class="book-title" th:text="${b.title}">Titolo</span>
+							<span class="book-meta" th:text="${b.year+', '+b.authors[0].name}">2000, Autore</span>
+							<a th:href="@{'/editAuthor/' + ${currAuthor.authorId} + '/removeBook/' + ${b.bookId}}">
+								Rimuovi</a>
+						</div>
+					</a>
+				</li>
+				<a th:href="@{'/editAuthor/' + ${currAuthor.authorId} + '/selectBook'}">Aggiungi libro</a>
+			</ul>
+		</div>
+
+	</div>
+	<h1 th:unless="${currAuthor}">L'autore non è presente nel sistema.</h1>
+</body>
+
+</html>
