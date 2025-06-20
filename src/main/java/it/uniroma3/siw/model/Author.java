@@ -1,13 +1,14 @@
 package it.uniroma3.siw.model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -16,7 +17,7 @@ import jakarta.validation.constraints.PastOrPresent;
 public class Author {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long authorId;
+	private Long id;
 	@NotBlank
 	private String name;
 	@NotBlank
@@ -26,50 +27,58 @@ public class Author {
 	private LocalDate dateOfBirth;
 	@PastOrPresent
 	private LocalDate dateOfDeath;
-	@NotBlank
-	private String nationality;
 	@ManyToMany(mappedBy = "authors") // Reverse side of the relationship
-	private List<Book> books = new ArrayList<>();
-	private String photoUrl;
+	private Set<Book> books = new HashSet<>();
+	@OneToOne
+	private Image picture;
+	private String nationality;
 
-	public Long getAuthorId() {
-		return authorId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setAuthorId(Long id) {
-		this.authorId = id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String nome) {
-		this.name = nome;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getSurname() {
 		return surname;
 	}
 
-	public void setSurname(String cognome) {
-		this.surname = cognome;
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
 	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(LocalDate year) {
-		this.dateOfBirth = year;
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	public LocalDate getDateOfDeath() {
 		return dateOfDeath;
 	}
 
-	public void setDateOfDeath(LocalDate year) {
-		this.dateOfDeath = year;
+	public void setDateOfDeath(LocalDate dateOfDeath) {
+		this.dateOfDeath = dateOfDeath;
+	}
+
+	public Set<Book> getBooks() {
+		return books;
+	}
+
+	public void setBooks(Set<Book> books) {
+		this.books = books;
 	}
 
 	public String getNationality() {
@@ -80,20 +89,12 @@ public class Author {
 		this.nationality = nationality;
 	}
 
-	public List<Book> getBooks() {
-		return books;
+	public Image getPicture() {
+		return picture;
 	}
 
-	public void setBooks(List<Book> books) {
-		this.books = books;
-	}
-
-	public String getPhotoUrl() {
-		return photoUrl;
-	}
-
-	public void setPhotoUrl(String photoUrl) {
-		this.photoUrl = photoUrl;
+	public void setPicture(Image pictureUrl) {
+		this.picture = pictureUrl;
 	}
 
 	@Override
@@ -103,7 +104,6 @@ public class Author {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
 		result = prime * result + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
-		result = prime * result + ((nationality == null) ? 0 : nationality.hashCode());
 		return result;
 	}
 
@@ -131,18 +131,12 @@ public class Author {
 				return false;
 		} else if (!dateOfBirth.equals(other.dateOfBirth))
 			return false;
-		if (nationality == null) {
-			if (other.nationality != null)
-				return false;
-		} else if (!nationality.equals(other.nationality))
-			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Author [authorId=" + authorId + ", name=" + name + ", surname=" + surname + ", dateOfBirth="
-				+ dateOfBirth + ", nationality=" + nationality + "]";
+		return "Author [name=" + name + ", surname=" + surname + ", dateOfBirth=" + dateOfBirth + "]";
 	}
 
 }

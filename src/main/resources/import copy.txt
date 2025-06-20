@@ -1,0 +1,20 @@
+insert into book_image_urls (book_id, image_urls) values (1, 'https://pad.mybooks.it/filmclub/2006/04/020/locandina.jpg');
+insert into book_image_urls (book_id, image_urls) values (2, 'https://aforismi.meglio.it/img/film/Non_%C3%A8_un_paese_per_vecchi.jpg');
+insert into book_image_urls (book_id, image_urls) values (3, 'https://pad.mybooks.it/filmclub/2016/03/235/locandina.jpg');
+insert into book_image_urls (book_id, image_urls) values (4, 'https://pad.mybooks.it/filmclub/2001/12/001/locandina.jpg');
+insert into book_image_urls (book_id, image_urls) values (5, 'https://media-assets.wired.it/photos/615daad62707bc568326abfa/master/w_1600,c_limit/war-for-the-planet-of-the-apes1.jpg');
+insert into book_image_urls (book_id, image_urls) values (6, 'https://www.rai.it/dl/img/2016/02/23/1280x720_1456237082397_jeegrobot.jpg');
+insert into book_image_urls (book_id, image_urls) values (7, 'https://citynews-today.stgy.ovh/~media/horizontal-mid/20648620006811/yesterday-film-poster-book-universal-pictures-2.jpg');
+
+insert into author (id, name, surname, date_of_birth, picture_url) values(nextval('hibernate_sequence'), 'Tim', 'Burton', '1958-08-25', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Tim_Burton_by_Gage_Skidmore.jpg/440px-Tim_Burton_by_Gage_Skidmore.jpg');
+insert into author (id, name, surname, date_of_birth, picture_url) values(nextval('hibernate_sequence'), 'Himesh', 'Patel', '1990-10-13', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Himesh_Patel_2019_%28cropped%29.jpg/440px-Himesh_Patel_2019_%28cropped%29.jpg');
+insert into author (id, name, surname, date_of_birth, picture_url) values(nextval('hibernate_sequence'), 'Danny', 'Boyle', '1956-10-20', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Danny_Boyle_2019_%28cropped%29.jpg/440px-Danny_Boyle_2019_%28cropped%29.jpg');
+insert into author (id, name, surname, date_of_birth, picture_url) values(nextval('hibernate_sequence'), 'Tim', 'Roth', '1961-05-14', 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Tim_Roth_by_Gage_Skidmore_2.jpg/440px-Tim_Roth_by_Gage_Skidmore_2.jpg');
+insert into author (id, name, surname, date_of_birth, picture_url) values(nextval('hibernate_sequence'), 'Michael', 'Keaton', '1951-09-05', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Michael_Keaton_by_Gage_Skidmore.jpg/440px-Michael_Keaton_by_Gage_Skidmore.jpg');
+insert into author (id, name, surname, date_of_birth, picture_url) values(nextval('hibernate_sequence'), 'Stanley', 'Kubrick', '1928-07-26', 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Kubrick_on_the_set_of_Barry_Lyndon_%281975_publicity_photo%29_crop.jpg/440px-Kubrick_on_the_set_of_Barry_Lyndon_%281975_publicity_photo%29_crop.jpg');
+insert into author (id, name, surname, date_of_birth, picture_url) values(nextval('hibernate_sequence'), 'Ronald Lee', 'Ermey', '1944-03-24', 'https://upload.wikimedia.org/wikipedia/commons/4/4f/RLeeErmeyCrop.jpeg');	
+insert into author (id, name, surname, date_of_birth, picture_url) values(nextval('hibernate_sequence'), 'Claudio', 'Santamaria', '1974-07-22', 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Claudio_Santamaria.jpg');
+insert into author (id, name, surname, date_of_birth, picture_url) values(nextval('hibernate_sequence'), 'Gabriele', 'Mainetti', '1976-11-07', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Gabriele_Mainetti%2C_September_2017.jpg/440px-Gabriele_Mainetti%2C_September_2017.jpg');
+
+insert into users(id, name, surname, email) values(1, 'sim', 'gia', 'sim@gia');
+insert into credentials(id, password, role, username, user_id) values(1, '$2a$10$okIBAVJOnTdpl/7j0DUoL.SEqS4FsOCJSE7cjO9zDkPNM7hxikuQu', 'ADMIN', 'sim.gia', 1);

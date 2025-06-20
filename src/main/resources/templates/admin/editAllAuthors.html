@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<title>SIW - Gestisci autori</title>
-	<link rel="stylesheet" href="stile.css" />
+	<meta charset="UTF-8">
+	<title>SIW - Gestisci Autori</title>
+	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
@@ -12,7 +13,7 @@
 
 	<ul class="book-list">
 		<li th:each="a : ${allAuthors}">
-			<a th:href="@{'/editAuthor/' + ${a.authorId}}" class="book-item">
+			<a th:href="@{'/editAuthor/' + ${a.id}}" class="book-item">
 				<img class="book-cover" th:src="${a.photoUrl}" alt="Foto Autore" />
 				<div class="book-details">
 					<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
@@ -21,8 +22,8 @@
 						<span th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
 							Data di nascita:</span>
 					</span>
-					<a th:href="@{'/editAuthor/' + ${a.authorId}}">Modifica</a>
-					<a th:href="@{'/editAuthor/' + ${a.authorId} + '/delete'}">Cancella</a>
+					<a th:href="@{'/editAuthor/' + ${a.id}}">Modifica</a>
+					<a th:href="@{'/editAuthor/' + ${a.id} + '/delete'}">Cancella</a>
 				</div>
 			</a>
 		</li>

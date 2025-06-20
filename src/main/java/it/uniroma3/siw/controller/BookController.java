@@ -1,21 +1,13 @@
 package it.uniroma3.siw.controller;
 
-import java.beans.PropertyEditorSupport;
-import java.time.Year;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
@@ -28,130 +20,114 @@ import jakarta.validation.Valid;
 // come GET o POST, mappata con l'uso di annotazioni come @GetMapping
 @Controller
 public class BookController {
+
 	@Autowired
 	BookService bookService;
 	@Autowired
 	AuthorService authorService;
 
-	@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(Year.class, new PropertyEditorSupport() {
-			@Override
-			public void setAsText(String text) {
-				setValue(Year.parse(text));
-			}
-		});
+	/*
+	 * Se l'utente clicca su 'Mostra Libri', viene mostrata la lista di tutti i
+	 * libri
+	 */
+	@GetMapping("/books")
+	public String findAll(Model model) {
+		model.addAttribute("allBooks", this.bookService.findAll());
+		return "allBooks";
 	}
 
-	@GetMapping("/")
-	public String index(Model model) {
-		return "index.html";
-	}
-
-	// Dopo che l'utente ha compilato la form, il nuovo libro viene aggiunto al
-	// sistema e viene mostrato all'utente
-	@PostMapping("/book")
-	public String createNewBook(@Valid @ModelAttribute Book book, BindingResult bindingResult, Model model) {
-		if (bindingResult.hasErrors()) {
-			return "newBookForm.html";
-		} else {
-			Book nuovoBook = this.bookService.saveBook(book);
-			model.addAttribute("currBook", nuovoBook);
-			return "redirect:/book.html";
-		}
-	}
-
-	// Mostra la lista di tutti i libri
-	@GetMapping("/book")
-	public String getAllBooks(Model model) {
-		model.addAttribute("allBooks", this.bookService.getAllBooks());
-		return "allBooks.html";
-	}
-
-	// Se l'utente clicca il link ad un libro, viene mostrata la pagina di quel
-	// libro
-	@GetMapping("/book/{id}")
-	public String getBookById(@PathVariable Long id, Model model) {
+	/* Se l'utente clicca su un libro, viene mostrata la pagina di quel libro */
+	@GetMapping("/books/{id}")
+	public String findById(@PathVariable Long id, Model model) {
 		/*
 		 * When rendering the view (book.html) I want to make this object
-		 * (getBookById(id)) available inside the page, under the name "currBook".
+		 * (findById(id)) available inside the page, under the name "currBook".
 		 * This way, inside book.html all of the book’s properties can be accessed:
 		 * <h1 th:text="${currBook.title}">Default Title</h1>
 		 */
-		model.addAttribute("currBook", this.bookService.getBookById(id));
-		return "book.html";
+		model.addAttribute("currBook", this.bookService.findById(id));
+		return "currBook";
 	}
 
-	// Quando l'utente clicca su 'Inserisci nuovo libro' viene indirizzato qui
-	@GetMapping("/newBookForm")
+	/*
+	 * Se l'amministratore clicca su 'Inserisci nuovo libro' viene mostrato questo
+	 * form
+	 */
+	@GetMapping("/admin/newBookForm")
 	public String newBookForm(Model model) {
 		model.addAttribute("currBook", new Book());
-		/*
-		 * List<Year> years = new ArrayList<>();
-		 * for (int y = 1900; y <= Year.now().getValue(); y++) {
-		 * years.add(Year.of(y));
-		 * }
-		 * model.addAttribute("years", years);
-		 */
-		return "newBookForm.html";
+		return "newBookForm";
 	}
 
-	// Quando l'utente clicca su 'Gestisci' viene mostrata una lista di tutti i
-	// libri simile a quella di prima, ma accanto ad ogni libro sono anche presenti
-	// le opzioni 'modifica' e 'cancella'
-	@GetMapping("/editBook")
+	/*
+	 * Dopo che l'utente ha compilato la form, il nuovo libro viene aggiunto al
+	 * sistema e viene mostrato all'utente
+	 */
+	@PostMapping("/books")
+	public String saveBook(@Valid @ModelAttribute("currBook") Book book, BindingResult bindingResult,
+			Model model) {
+		if (bindingResult.hasErrors()) {
+			return "newBookForm";
+		} else {
+			Book savedBook = this.bookService.save(book);
+			model.addAttribute("currBook", savedBook);
+			return "redirect:/books/" + savedBook.getId();
+		}
+	}
+
+	/*
+	 * Se l'amministratore clicca su 'Gestisci Libri' viene mostrata una lista di
+	 * tutti i libri simile a prima, ma accanto ad ogni libro sono anche presenti le
+	 * opzioni 'modifica' e 'cancella'
+	 */
+	@GetMapping("/admin/editBooks")
 	public String editAllBooks(Model model) {
-		model.addAttribute("allBooks", this.bookService.getAllBooks());
-		return "editAllBooks.html";
+		model.addAttribute("allBooks", this.bookService.findAll());
+		return "admin/editAllBooks";
 	}
 
-	// Dopo aver cliccato su 'Gestisci', e successivamente sul link ad un libro,
-	// viene mostrata una pagina corrispondente a quel libro simile a quella di
-	// prima, con alcune aggiunte:
-	// 1. accanto ad ogni autore è presente l'opzione 'cancella' 2. alla fine della
-	// lista degli autori è presente un'opzione 'aggiungi', che permette di
-	// aggiungere alla lista di autori di quel libro un altro autore già registrato
-	// nel sistema
-	@GetMapping("/editBook/{id}")
+	/*
+	 * Dopo aver cliccato su 'Gestisci' e successivamente su un libro,
+	 * viene mostrata la pagina corrispondente a quel libro simile a prima,
+	 * ma con alcune aggiunte:
+	 * 1. accanto ad ogni autore è presente l'opzione 'cancella'
+	 * 2. alla fine della lista degli autori è presente un'opzione 'aggiungi', che
+	 * permette di aggiungere alla lista di autori di quel libro un altro autore già
+	 * registrato nel sistema
+	 */
+	@GetMapping("/admin/editBooks/{id}")
 	public String editBookById(@PathVariable Long id, Model model) {
-		model.addAttribute("currBook", this.bookService.getBookById(id));
-		return "editBook.html";
+		model.addAttribute("currBook", this.bookService.findById(id));
+		return "admin/editCurrBook";
 	}
 
-	@PostMapping("/editBook/{id}/delete")
+	/* Cancella un libro */
+	@PostMapping("/admin/editBooks/{id}/delete")
 	public String deleteBookById(@PathVariable Long id, Model model) {
 		this.bookService.deleteBookById(id);
-		model.addAttribute("allBooks", this.bookService.getAllBooks());
-		return "redirect:/editAllBooks.html";
+		model.addAttribute("allBooks", this.bookService.findAll());
+		return "redirect:/admin/editBooks";
 	}
 
-	@PostMapping("/editBook/{bookId}/addAuthor/{authorId}")
-	public String addAuthorToBook(@PathVariable Long bookId, @PathVariable Long authorId, Model model) {
-		this.bookService.addAuthorToBook(bookId, authorId);
-		return "redirect:/editBook.html";
+	/* Aggiunge un autore già esistente nel sistema al libro */
+	@PostMapping("/admin/editBooks/{bId}/addAuthors/{aId}")
+	public String addAuthorToBook(@PathVariable Long aId, @PathVariable Long bId, Model model) {
+		this.bookService.addAuthorToBook(aId, bId);
+		return "redirect:/admin/editBooks/" + bId;
 	}
 
-	@PostMapping("/editBook/{bookId}/deleteAuthor/{authorId}")
-	public String deleteAuthorFromBook(@PathVariable Long bookId, @PathVariable Long authorId, Model model) {
-		bookService.deleteAuthorFromBook(bookId, authorId);
-		Book nuovoBook = this.bookService.getBookById(bookId);
-		model.addAttribute("currBook", nuovoBook);
-		return "redirect:/editBook.html";
+	/* Rimuove un autore dal libro */
+	@PostMapping("/admin/editBooks/{bId}/deleteAuthors/{aId}")
+	public String deleteAuthorFromBook(@PathVariable Long aId, @PathVariable Long bId, Model model) {
+		this.bookService.deleteAuthorFromBook(aId, bId);
+		return "redirect:/admin/editBooks/" + bId;
 	}
 
-	@GetMapping("/editBook/{bookId}/selectAuthor")
-	public String showAuthorSelection(@PathVariable Long bookId, Model model) {
-		Book book = bookService.getBookById(bookId);
-		List<Author> allAuthors = (List<Author>) authorService.getAllAuthors();
-
-		// Filtra solo gli autori non già associati al libro
-		List<Author> availableAuthors = allAuthors.stream()
-				.filter(author -> !book.getAuthors().contains(author))
-				.toList();
-
-		model.addAttribute("bookId", bookId);
-		model.addAttribute("availableAuthors", availableAuthors);
-		return "selectAuthor.html";
+	/* Mostra gli autori che possono venire aggiunti al libro */
+	@GetMapping("/admin/editBooks/{id}/selectAuthors")
+	public String showAuthorSelection(@PathVariable Long id, Model model) {
+		model.addAttribute("allAuthors", this.authorService.findAuthorsNotInBook(id));
+		return "admin/selectAuthor";
 	}
 
 }

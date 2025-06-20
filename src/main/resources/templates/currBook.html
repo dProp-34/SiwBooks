@@ -2,16 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+	<meta charset="UTF-8">
 	<title th:text="'SIW - ' + ${currBook.title}">SIW - Libro</title>
-	<link rel="stylesheet" href="stile.css" />
+	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
 	<div th:replace="fragments.html :: siteHeader"></div>
-
 	<div th:if="${currBook}">
-		<!-- Info Libro -->
 		<div class="book-details">
+
+			<!-- Info Libro -->
 			<span class="book-title" th:text="${currBook.title}">Titolo</span>
 			<span class="book-meta" th:text="${'Pubblicato nel: '+currBook.year}">Pubblicato nel: 2000</span>
 		</div>
@@ -24,21 +25,7 @@
 		<!-- Elenco autori -->
 		<div>
 			<h2>Scritto da:</h2>
-			<ul class="book-list">
-				<li th:each="a : ${currBook.authors}">
-					<a th:href="@{'/author/' + ${a.authorId}}" class="book-item">
-						<img class="book-cover" th:src="${a.photoUrl}" alt="Foto Autore" />
-						<div class="book-details">
-							<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
-							<span class="book-meta">
-								<span th:text="${'Nazionalità: '+ a.nationality}">Nazionalità:</span>
-								<span th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
-									Data di nascita:</span>
-							</span>
-						</div>
-					</a>
-				</li>
-			</ul>
+			<div th:replace="fragments.html :: allAuthorsList(${currBook.authors})"></div>
 		</div>
 
 	</div>

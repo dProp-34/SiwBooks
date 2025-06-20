@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<title>SIW - Modifica autore</title>
-	<link rel="stylesheet" href="stile.css" />
+	<meta charset="UTF-8">
+	<title>SIW - Modifica Autore</title>
+	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
@@ -12,12 +13,22 @@
 		<div class="book-item">
 
 			<!-- Foto autore -->
-			<img class="book-cover" th:src="${currAuthor.photoUrl}" alt="Foto autore" />
+			<img class="book-cover" th:if="${a.picture!=null}" th:src="@{'/authors/' + ${currAuthor.id} + '/image'}"
+				alt="Foto Autore" />
+
+			<!-- Form caricamento foto -->
+			<div>
+				<form th:action="@{'/admin/editAuthor/' + ${currAuthor.id} + '/uploadPhoto'}" method="post"
+					enctype="multipart/form-data">
+					<label for="image">Carica nuova foto:</label>
+					<input type="file" name="image" accept="image/*" required />
+					<button type="submit">Carica</button>
+				</form>
+			</div>
 
 			<!-- Info autore -->
 			<div class="book-details">
 				<span class="book-title" th:text="${currAuthor.name + ' ' + currAuthor.surname}">Nome Cognome</span>
-				<!-- span class="book-meta" -->
 				<span th:text="${'Nazionalità: '+ currAuthor.nationality}">Nazionalità:</span>
 				<span th:text="${'Data di nascita: '+ #temporals.format(currAuthor.dateOfBirth, 'dd/MM/yyyy')}">
 					Data di nascita:</span>
@@ -30,23 +41,10 @@
 		<!-- Elenco libri -->
 		<div>
 			<h2>Libri pubblicati:</h2>
-			<ul class="book-list">
-				<li th:each="b : ${currAuthor.books}">
-					<a th:href="@{'/editBook/' + ${b.bookId}}" class="book-item">
-						<img class="book-cover" th:src="${b.imageUrls[0]}" alt="Copertina libro" />
-						<div class="book-details">
-							<span class="book-title" th:text="${b.title}">Titolo</span>
-							<span class="book-meta" th:text="${b.year+', '+b.authors[0].name}">2000, Autore</span>
-							<a th:href="@{'/editAuthor/' + ${currAuthor.authorId} + '/removeBook/' + ${b.bookId}}">
-								Rimuovi</a>
-						</div>
-					</a>
-				</li>
-				<a th:href="@{'/editAuthor/' + ${currAuthor.authorId} + '/selectBook'}">Aggiungi libro</a>
-			</ul>
+			<div th:replace="fragments.html :: editAllBooksList(${currAuthor.books})"></div>
 		</div>
-
 	</div>
+
 	<h1 th:unless="${currAuthor}">L'autore non è presente nel sistema.</h1>
 </body>
 

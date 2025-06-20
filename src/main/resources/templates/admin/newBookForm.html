@@ -2,25 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+	<meta charset="UTF-8">
 	<title>SIW - Nuovo Libro</title>
-	<link rel="stylesheet" href="stile.css" />
-	<script>
-		function addImageUrlField() {
-			const container = document.getElementById('imageUrlsContainer');
-			const index = container.children.length;
-			const newDiv = document.createElement('div');
-			newDiv.innerHTML = `
-				URL immagine ${index + 1}: 
-				<input type="url" name="imageUrls[${index}]" />
-			`;
-			container.appendChild(newDiv);
-		}
-	</script>
+	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
 	<div th:replace="fragments.html :: siteHeader"></div>
-
 	<h1>Inserisci Nuovo Libro</h1>
 
 	<form th:action="@{/book}" method="POST" th:object="${currBook}">

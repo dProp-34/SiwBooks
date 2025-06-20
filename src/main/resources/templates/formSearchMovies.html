@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>SIW - Ricerca Libri</title>
+	<link rel="stylesheet" href="/css/stile.css" />
+</head>
+
+<body>
+	<div th:replace="fragments.html :: siteHeader"></div>
+	<h1>Cerca film per anno</h1>
+	<form th:action="@{/searchBooks}" method="post">
+		<div>Anno: <input type="text" th:value="${year}" name="year" /></div>
+		<div>Cerca<input type="submit" /></div>
+	</form>
+</body>
+
+</html>

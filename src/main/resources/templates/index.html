@@ -3,31 +3,30 @@
 
 <head>
 	<title>SIW Books - Home</title>
-	<link rel="stylesheet" href="stile.css" />
+	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
 	<div th:replace="fragments.html :: siteHeader"></div>
-	<h1> Benvenuto nella libreria digitale S.I.W. BOOKS </h1>
+	<h1>Benvenuto nella libreria digitale S.I.W. BOOKS</h1>
 
+	<!-- Public content - always visible -->
 	<h2>
-		<a href="allBooks.html">Consulta Libri</a>
+		<a th:href="@{/books}">Consulta Libri</a>
 	</h2>
 	<h2>
-		<a href="allAuthors.html">Consulta Autori</a>
+		<a th:href="@{/authors}">Consulta Autori</a>
 	</h2>
-	<h2>
-		<a href="newBookForm.html">Inserisci nuovo Libro</a>
-	</h2>
-	<h2>
-		<a href="newAuthorForm.html">Inserisci nuovo Autore</a>
-	</h2>
-	<h2>
-		<a href="editAllBooks.html">Gestisci Libri</a>
-	</h2>
-	<h2>
-		<a href="editAllAuthors.html">Gestisci Autori</a>
-	</h2>
+
+	<!-- Admin-only content - only visible to admin users -->
+	<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+		<h2>
+			<a th:href="@{/admin/editBooks}">Gestisci Libri</a>
+		</h2>
+		<h2>
+			<a th:href="@{/admin/editAuthors}">Gestisci Autori</a>
+		</h2>
+	</div>
 </body>
 
 </html>

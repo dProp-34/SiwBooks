@@ -1,70 +1,68 @@
 package it.uniroma3.siw.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.model.Book;
-import it.uniroma3.siw.repositoy.AuthorRepository;
-import it.uniroma3.siw.repositoy.BookRepository;
-import jakarta.persistence.EntityNotFoundException;
+import it.uniroma3.siw.repository.AuthorRepository;
+import it.uniroma3.siw.repository.BookRepository;
 
 @Service
 public class BookService {
-	@Autowired // Per iniettare automaticamente le variabili da cui dipende questa classe
+
+	@Autowired
 	private BookRepository bookRepository;
 	@Autowired
 	private AuthorRepository authorRepository;
 
-	public Book getBookById(Long id) {
-		return bookRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Book not found"));
+	public Book findById(Long id) {
+		return bookRepository.findById(id).get();
 	}
 
-	public Book saveBook(Book book) {
-		return bookRepository.save(book);
-	}
-
-	public Iterable<Book> getAllBooks() {
+	public Iterable<Book> findAll() {
 		return bookRepository.findAll();
+	}
+
+	public Book save(Book book) {
+		return bookRepository.save(book);
 	}
 
 	public void deleteBookById(Long id) {
 		bookRepository.deleteById(id);
 	}
 
-	public void addAuthorToBook(Long bookId, Long authorId) {
-		Book book = bookRepository.findById(bookId)
-				.orElseThrow(() -> new EntityNotFoundException("Book not found"));
-		Author author = authorRepository.findById(authorId)
-				.orElseThrow(() -> new EntityNotFoundException("Author not found"));
-		if (!book.getAuthors().contains(author)) {
-			book.getAuthors().add(author);
-			author.getBooks().add(book); // Per mantenere l'associazione bidirezionale
-			bookRepository.save(book);
-			authorRepository.save(author);
-		}
+	public Iterable<Book> findBooksNotInAuthor(@Param("authorId") Long authorId) {
+		return bookRepository.findBooksNotInAuthor(authorId);
 	}
 
-	public void deleteAuthorFromBook(Long bookId, Long authorId) {
-		Book book = bookRepository.findById(bookId)
-				.orElseThrow(() -> new EntityNotFoundException("Book not found"));
-		Author author = authorRepository.findById(authorId)
-				.orElseThrow(() -> new EntityNotFoundException("Author not found"));
-		if (book.getAuthors().remove(author)) {
-			author.getBooks().remove(book);
-			bookRepository.save(book);
-			authorRepository.save(author);
-		}
+	public Iterable<Book> findByReleaseYear(int year) {
+		return bookRepository.findByReleaseYear(year);
 	}
 
-	public void deleteAuthorFromBook(Long bookId) {
-		Book book = bookRepository.findById(bookId)
-				.orElseThrow(() -> new EntityNotFoundException("Book not found"));
-		for (Author a : book.getAuthors()) {
-			a.getBooks().remove(book);
-			authorRepository.save(a);
-		}
-		book.getAuthors().clear();
+	public boolean existsByTitleAndReleaseYear(String title, int year) {
+		return bookRepository.existsByTitleAndReleaseYear(title, year);
+	}
+
+	public void addAuthorToBook(Long authorId, Long bookId) {
+		Author author = authorRepository.findById(authorId).orElseThrow();
+		Book book = bookRepository.findById(bookId).orElseThrow();
+
+		author.getBooks().add(book);
+		book.getAuthors().add(author);
+
+		authorRepository.save(author);
+		bookRepository.save(book);
+	}
+
+	public void deleteAuthorFromBook(Long authorId, Long bookId) {
+		Author author = authorRepository.findById(authorId).orElseThrow();
+		Book book = bookRepository.findById(bookId).orElseThrow();
+
+		author.getBooks().remove(book);
+		book.getAuthors().remove(author);
+
+		authorRepository.save(author);
 		bookRepository.save(book);
 	}
 

@@ -1,40 +1,42 @@
 package it.uniroma3.siw.model;
 
-import java.time.Year;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import jakarta.persistence.ElementCollection;
+import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 
 @Entity
 public class Book {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long bookId;
+	private Long id;
 	@NotBlank
 	private String title;
-	@NotNull
-	@PastOrPresent
-	private Year releaseYear;
-	@ManyToMany // The mappedBy attribute is only required on the inverse side of a
-				// bidirectional relationship
-	private List<Author> authors;
-	@ElementCollection // Persistable list of image URLs
-	private List<String> imageUrls = new ArrayList<>();
+	@Min(1900)
+	@Max(2100)
+	private int releaseYear;
+	@ManyToMany // The mappedBy attribute is only required on the inverse side
+	@JoinTable(name = "book_authors")
+	private Set<Author> authors = new HashSet<>();
+	@OneToMany
+	private List<Image> images = new ArrayList<>();
 
-	public Long getBookId() {
-		return bookId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setBookId(Long id) {
-		this.bookId = id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -45,28 +47,28 @@ public class Book {
 		this.title = title;
 	}
 
-	public Year getReleaseYear() {
+	public int getReleaseYear() {
 		return releaseYear;
 	}
 
-	public void setReleaseYear(Year year) {
-		this.releaseYear = year;
+	public void setReleaseYear(int releaseYear) {
+		this.releaseYear = releaseYear;
 	}
 
-	public List<Author> getAuthors() {
+	public Set<Author> getAuthors() {
 		return authors;
 	}
 
-	public void setAuthors(List<Author> actors) {
-		this.authors = actors;
+	public void setAuthors(Set<Author> authors) {
+		this.authors = authors;
 	}
 
-	public List<String> getImageUrls() {
-		return imageUrls;
+	public List<Image> getImageUrls() {
+		return images;
 	}
 
-	public void setImageUrls(List<String> url) {
-		this.imageUrls = url;
+	public void setImageUrls(List<Image> imageUrls) {
+		this.images = imageUrls;
 	}
 
 	@Override
@@ -74,7 +76,7 @@ public class Book {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + ((releaseYear == null) ? 0 : releaseYear.hashCode());
+		result = prime * result + releaseYear;
 		return result;
 	}
 
@@ -92,17 +94,14 @@ public class Book {
 				return false;
 		} else if (!title.equals(other.title))
 			return false;
-		if (releaseYear == null) {
-			if (other.releaseYear != null)
-				return false;
-		} else if (!releaseYear.equals(other.releaseYear))
+		if (releaseYear != other.releaseYear)
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Book [bookId=" + bookId + ", title=" + title + ", releaseYear=" + releaseYear + "]";
+		return "Book [title=" + title + ", releaseYear=" + releaseYear + "]";
 	}
 
 }

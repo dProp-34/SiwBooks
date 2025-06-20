@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+	<meta charset="UTF-8">
 	<title>SIW - Seleziona Libro</title>
-	<link rel="stylesheet" href="stile.css" />
+	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
@@ -15,7 +16,7 @@
 			<li th:each="book : ${availableBooks}">
 				<span th:text="${book.title+', '+book.year}">Titolo, 2000</span>
 				<!-- Pulsante per aggiungere il libro all'autore -->
-				<form th:action="@{'/editAuthor/' + ${authorId} + '/addBook/' + ${book.bookId}}" method="post"
+				<form th:action="@{'/editAuthors/' + ${id} + '/addBooks/' + ${book.id}}" method="post"
 					style="display:inline;">
 					<button type="submit">Aggiungi</button>
 				</form>
@@ -26,7 +27,7 @@
 	<div th:if="${availableBooks == null or #lists.isEmpty(availableBooks)}">
 		<p>Nessun libro disponibile.</p>
 	</div>
-	<p><a th:href="@{'/editAuthor/' + ${authorId}}">Torna indietro</a></p>
+	<p><a th:href="@{'/editAuthors/' + ${id}}">Torna indietro</a></p>
 
 </body>
 

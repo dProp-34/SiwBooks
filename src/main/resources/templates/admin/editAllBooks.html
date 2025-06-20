@@ -2,8 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <title>SIW - Gestisci libri</title>
-  <link rel="stylesheet" href="stile.css" />
+  <meta charset="UTF-8">
+
+  <title>SIW - Gestisci Libri</title>
+  <link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
@@ -12,13 +14,13 @@
 
   <ul class="book-list">
     <li th:each="b : ${allBooks}">
-      <a th:href="@{'/editBook/' + ${b.bookId}}" class="book-item">
+      <a th:href="@{'/editBook/' + ${b.id}}" class="book-item">
         <img class="book-cover" th:src="${b.imageUrls[0]}" alt="Copertina libro" />
         <div class="book-details">
           <span class="book-title" th:text="${b.title}">Titolo</span>
           <span class="book-meta" th:text="${b.year+', '+b.authors[0].name}">2000, Autore</span>
-          <a th:href="@{'/editBook/' + ${b.bookId}}">Modifica</a>
-          <a th:href="@{'/editBook/' + ${b.bookId} + '/delete'}">Cancella</a>
+          <a th:href="@{'/editBook/' + ${b.id}}">Modifica</a>
+          <a th:href="@{'/editBook/' + ${b.id} + '/delete'}">Cancella</a>
         </div>
       </a>
     </li>

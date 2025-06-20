@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>SIW - Login</title>
+	<link rel="stylesheet" href="/css/stile.css" />
+</head>
+
+<body>
+	<div th:replace="fragments.html :: siteHeader"></div>
+	<h1>Login</h1>
+	<div th:if="${registrationSuccess}" style="color: green; font-weight: bold; margin: 1em 0;">
+		Registrazione completata!</div>
+
+	<form th:action="@{/login}" method="POST">
+		<div>
+			<span>Username:</span>
+			<span><input name="username" type="text" required /></span>
+		</div>
+		<div>
+			<span>Password:</span>
+			<span><input name="password" type="password" required /></span>
+		</div>
+		<div>
+			<span th:if="${param.error != null}">Username o password errati</span>
+		</div>
+		<div>
+			<span><button type="submit">Login</button></span>
+		</div>
+	</form>
+	<div>
+		<a th:href="@{/register}" th:text="Registrati">Registrati</a>
+	</div>
+</body>
+
+</html>
