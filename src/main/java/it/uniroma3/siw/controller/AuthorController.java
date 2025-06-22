@@ -1,10 +1,6 @@
 package it.uniroma3.siw.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,8 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.service.AuthorService;
@@ -49,7 +44,7 @@ public class AuthorController {
 		return "newAuthorForm";
 	}
 
-	/* Aggiunge un autore al sistema */
+	/* Crea un nuovo autore da aggiungere al sistema */
 	@PostMapping("/authors")
 	public String saveAuthor(@Valid @ModelAttribute("currAuthor") Author author, BindingResult bindingResult,
 			Model model) {
@@ -75,7 +70,7 @@ public class AuthorController {
 		return "admin/editCurrAuthor";
 	}
 
-	/* Cancella un autore */
+	/* Cancella un autore dal sistema */
 	@PostMapping("/admin/editAuthors/{id}/delete")
 	public String deleteAuthorById(@PathVariable Long id, Model model) {
 		this.authorService.deleteAuthorById(id);
@@ -83,48 +78,47 @@ public class AuthorController {
 		return "redirect:/admin/editAllAuthors";
 	}
 
-	/* Aggiunge un libro già esistente nel sistema all'autore */
-	@PostMapping("/admin/editAuthors/{aId}/addBooks/{bId}")
-	public String addBookToAuthor(@PathVariable Long bId, @PathVariable Long aId, Model model) {
-		this.authorService.addBookToAuthor(bId, aId);
-		return "redirect:/admin/editAllAuthors/" + aId;
-	}
-
 	/* Rimuove un libro dall'autore */
 	@PostMapping("/admin/editAuthors/{aId}/deleteBooks/{bId}")
 	public String deleteBookFromAuthor(@PathVariable Long bId, @PathVariable Long aId, Model model) {
 		this.authorService.deleteBookFromAuthor(bId, aId);
-		return "redirect:/admin/editAllAuthors/" + aId;
+		return "redirect:/admin/editAuthors/" + aId;
 	}
 
 	/* Mostra i libri che possono venire aggiunti all'autore */
-	@GetMapping("/admin/editAuthors/{id}/selectBooks")
+	@GetMapping("/admin/editAuthors/{id}/addBooks")
 	public String showBookSelection(@PathVariable Long id, Model model) {
 		model.addAttribute("allBooks", this.bookService.findBooksNotInAuthor(id));
-		return "admin/selectBook";
+		return "admin/selectBooks";
 	}
 
-	@GetMapping("/authors/{id}/image")
-	public ResponseEntity<byte[]> getAuthorPicture(@PathVariable Long id) {
-		Author author = authorService.findById(id);
-		if (author == null || author.getPicture() == null || author.getPicture().getBytes() == null) {
-			return ResponseEntity.notFound().build();
-		}
-		byte[] imageBytes = author.getPicture().getBytes();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.IMAGE_PNG);
-		return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+	/* Aggiunge un libro già esistente nel sistema all'autore */
+	@PostMapping("/admin/editAuthors/{aId}/addBooks/{bId}")
+	public String addBookToAuthor(@PathVariable Long bId, @PathVariable Long aId, Model model) {
+		this.authorService.addBookToAuthor(bId, aId);
+		return "redirect:/admin/editAuthors/" + aId;
 	}
 
-	@PostMapping("/admin/editAuthors/{id}/image")
-	public String uploadAuthorPicture(@PathVariable Long id, @RequestParam MultipartFile imageFile, Model model) {
-		try {
-			authorService.saveAuthorPicture(id, imageFile);
-		} catch (Exception e) {
-			model.addAttribute("uploadError", "Errore nel caricamento dell'immagine.");
+	@PostMapping("/admin/editAuthors/{id}/update")
+	public String updateAuthor(@PathVariable Long id, @ModelAttribute("currAuthor") Author updatedAuthor,
+			BindingResult result, Model model) {
+		if (result.hasErrors())
 			return "admin/editAllAuthors";
-		}
-		return "redirect:/admin/editAllAuthors/" + id;
+		Author existingAuthor = this.authorService.findById(id);
+		// aggiorna i campi
+		existingAuthor.setName(updatedAuthor.getName());
+		existingAuthor.setSurname(updatedAuthor.getSurname());
+		existingAuthor.setNationality(updatedAuthor.getNationality());
+		existingAuthor.setDateOfBirth(updatedAuthor.getDateOfBirth());
+		existingAuthor.setDateOfDeath(updatedAuthor.getDateOfDeath());
+		this.authorService.save(existingAuthor);
+		return "redirect:/admin/editAuthors/" + id;
+	}
+
+	@GetMapping("/authors/{id}/pictureId")
+	@ResponseBody
+	public Long getAuthorPictureId(@PathVariable Long id) {
+		return authorService.findById(id).getPicture().getId();
 	}
 
 }

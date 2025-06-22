@@ -8,7 +8,7 @@
 </head>
 
 <body>
-	<div th:replace="fragments.html :: siteHeader"></div>
+	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<h1>Seleziona un libro da aggiungere:</h1>
 
 	<div th:if="${availableBooks != null and #lists.isEmpty(availableBooks) == false}">

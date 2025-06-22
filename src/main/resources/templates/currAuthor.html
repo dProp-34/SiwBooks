@@ -8,24 +8,22 @@
 </head>
 
 <body>
-  <div th:replace="fragments.html :: siteHeader"></div>
+  <div th:replace="~{fragments.html :: siteHeader}"></div>
   <div th:if="${currAuthor}">
     <div class="book-item">
 
       <!-- Foto autore -->
-      <img class="book-cover" th:if="${a.picture!=null}" th:src="@{'/authors/' + ${a.id} + '/image'}"
+      <img class="book-cover" th:if="${currAuthor.picture!=null}" th:src="@{'/authors/' + ${currAuthor.id} + '/image'}"
         alt="Foto Autore" />
 
       <!-- Info autore -->
-      <div class="book-details">
-        <span class="book-title" th:text="${currAuthor.name + ' ' + currAuthor.surname}">Nome Cognome</span>
-        <span th:text="${'Nazionalità: '+ currAuthor.nationality}">Nazionalità:</span>
-        <span th:text="${'Data di nascita: '+ #temporals.format(currAuthor.dateOfBirth, 'dd/MM/yyyy')}">
-          Data di nascita:</span>
-        <span th:if="${currAuthor.dateOfDeath != null}"
-          th:text="${'Data di morte: '+ #temporals.format(currAuthor.dateOfDeath, 'dd/MM/yyyy')}">
-          Data di morte:</span>
-      </div>
+      <span class="book-title" th:text="${currAuthor.name + ' ' + currAuthor.surname}">Nome Cognome</span>
+      <span th:text="${'Nazionalità: '+ currAuthor.nationality}">Nazionalità:</span>
+      <span th:text="${'Data di nascita: '+ #temporals.format(currAuthor.dateOfBirth, 'dd/MM/yyyy')}">
+        Data di nascita:</span>
+      <span th:if="${currAuthor.dateOfDeath != null}"
+        th:text="${'Data di morte: '+ #temporals.format(currAuthor.dateOfDeath, 'dd/MM/yyyy')}">
+        Data di morte:</span>
     </div>
 
     <!-- Elenco libri -->

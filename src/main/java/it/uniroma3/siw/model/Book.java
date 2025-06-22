@@ -63,11 +63,11 @@ public class Book {
 		this.authors = authors;
 	}
 
-	public List<Image> getImageUrls() {
+	public List<Image> getImages() {
 		return images;
 	}
 
-	public void setImageUrls(List<Image> imageUrls) {
+	public void setImages(List<Image> imageUrls) {
 		this.images = imageUrls;
 	}
 

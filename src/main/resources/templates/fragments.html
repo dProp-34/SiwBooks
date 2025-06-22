@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -12,8 +12,8 @@
 
 			<!-- Sezione sinistra: logo e navigazione -->
 			<div style="display: flex; align-items: center;">
-				<a href="/"><img src="/images/logo-siw.png" width="100" alt="Logo SIW" /></a>
-				<nav style="display: flex; gap: 0.75rem; margin-left: 1rem;">
+				<a href="/"><img src="/images/logo-siw.png" width="175" alt="Logo SIW" /></a>
+				<nav style="display: flex; gap: 1rem; margin-left: 1rem;">
 					<a th:href="@{/books}">Libri</a>
 					<a th:href="@{/authors}">Autori</a>
 				</nav>
@@ -22,8 +22,10 @@
 			<!-- Sezione destra: login/logout -->
 			<div style="display: flex; gap: 0.75rem; margin-left: 1rem;">
 				<div th:if="${userDetails}">
-					<span th:text="${userDetails.username}"></span>
-					<a href="/logout">Logout</a>
+					<nav style="display: flex; gap: 1rem; margin-left: 1rem;">
+						<span th:text="${userDetails.username}"></span>
+						<a href="/logout">(Logout)</a>
+					</nav>
 				</div>
 				<div th:unless="${userDetails}">
 					<a href="/login">Login</a>
@@ -32,28 +34,11 @@
 		</header>
 	</div>
 
-	<div th:fragment="allBooksList(allBooks)">
-		<ul class="book-list">
-			<li th:each="b : ${allBooks}">
-				<a th:href="@{'/books/' + ${b.id}}" class="book-item">
-					<img class="book-cover" th:if="${not #lists.isEmpty(b.images)}" th:src="${b.images[0]}"
-						alt="Copertina libro" />
-					<div class="book-details">
-						<span class="book-title" th:text="${b.title}">Titolo</span>
-						<span class="book-meta"
-							th:text="${#lists.isEmpty(b.authors) ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
-							Nome Cognome, 2000</span>
-					</div>
-				</a>
-			</li>
-		</ul>
-	</div>
-
 	<div th:fragment="allAuthorsList(allAuthors)">
 		<ul class="book-list">
 			<li th:each="a : ${allAuthors}">
 				<a th:href="@{'/authors/' + ${a.id}}" class="book-item">
-					<img class="book-cover" th:if="${a.picture!=null}" th:src="@{'/authors/' + ${a.id} + '/image'}"
+					<img class="book-cover" th:if="${a.picture != null}" th:src="@{'/images/' + ${a.picture.id}}"
 						alt="Foto Autore" />
 					<div class="book-details">
 						<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
@@ -67,25 +52,75 @@
 			</li>
 		</ul>
 	</div>
-</body>
 
-<div th:fragment="editAllBooksList(allBooks, currAuthor)">
-	<ul class="book-list">
-		<li th:each="b : ${allBooks}">
-			<a th:href="@{'/admin/editBooks/' + ${b.id}}" class="book-item">
-				<img class="book-cover" th:if="${not #lists.isEmpty(b.images)}" th:src="${b.images[0]}"
-					alt="Copertina libro" />
-				<div class="book-details">
-					<span class="book-title" th:text="${b.title}">Titolo</span>
-					<span class="book-meta"
-						th:text="${#lists.isEmpty(b.authors) ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
-						Nome Cognome, 2000</span>
-					<a th:href="@{'/admin/editAuthors/' + ${currAuthor.id} + '/deleteBooks/' + ${b.id}}">Rimuovi</a>
-				</div>
-			</a>
-		</li>
-	</ul>
-	<a th:href="@{'/admin/editAuthors/' + ${currAuthor.id} + '/selectBooks'}">Aggiungi libro</a>
-</div>
+	<div th:fragment="editAuthorsList(allAuthors)">
+		<ul class="book-list">
+			<li th:each="a : ${allAuthors}">
+				<a th:href="@{'/admin/editAuthors/' + ${a.id}}" class="book-item">
+					<img class="book-cover" th:if="${a.picture != null}" th:src="@{'/images/' + ${a.picture.id}}"
+						alt="Foto Autore" />
+					<div class="book-details">
+						<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
+						<span class="book-meta">
+							<span th:text="${'Nazionalità: '+ a.nationality}">Nazionalità:</span><br>
+							<span th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
+								Data di nascita:</span>
+						</span>
+						<!-- Solo per utenti ADMIN -->
+						<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+							<a th:href="@{'/admin/editAuthors/' + ${a.id}}">Modifica</a>
+							<a th:href="@{'/admin/editAuthors/' + ${a.id} + '/delete'}">Cancella</a>
+						</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+		<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+			<h2><a th:href="@{/admin/newAuthorForm}">Crea nuovo autore</a></h2>
+		</div>
+	</div>
+
+	<div th:fragment="allBooksList(allBooks)">
+		<ul class="book-list">
+			<li th:each="b : ${allBooks}">
+				<a th:href="@{'/books/' + ${b.id}}" class="book-item">
+					<img class="book-cover" th:if="${not #lists.isEmpty(b.images)}"
+						th:src="@{'/images/' + ${b.images[0].id}}" alt="Copertina libro" />
+					<div class="book-details">
+						<span class="book-title" th:text="${b.title}">Titolo</span>
+						<span class="book-meta"
+							th:text="${#lists.isEmpty(b.authors) ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
+							Nome Cognome, 2000</span>
+					</div>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div th:fragment="editBooksList(allBooks)">
+		<ul class="book-list">
+			<li th:each="b : ${allBooks}">
+				<a th:href="@{'/admin/editBooks/' + ${b.id}}" class="book-item">
+					<img class="book-cover" th:if="${not #lists.isEmpty(b.images)}"
+						th:src="@{'/images/' + ${b.images[0].id}}" alt="Copertina libro" />
+					<div class="book-details">
+						<span class="book-title" th:text="${b.title}">Titolo</span>
+						<span class="book-meta"
+							th:text="${#lists.isEmpty(b.authors) ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
+							Nome Cognome, 2000</span>
+						<!-- Solo per utenti ADMIN -->
+						<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+							<a th:href="@{'/admin/editBooks/' + ${b.id}}">Modifica</a>
+							<a th:href="@{'/admin/editBooks/' + ${b.id} + '/delete'}">Cancella</a>
+						</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+		<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+			<h2><a th:href="@{/admin/newBookForm}">Crea nuovo libro</a></h2>
+		</div>
+	</div>
+</body>
 
 </html>

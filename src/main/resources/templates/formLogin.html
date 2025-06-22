@@ -8,7 +8,7 @@
 </head>
 
 <body>
-	<div th:replace="fragments.html :: siteHeader"></div>
+	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<h1>Login</h1>
 	<div th:if="${registrationSuccess}" style="color: green; font-weight: bold; margin: 1em 0;">
 		Registrazione completata!</div>

@@ -8,27 +8,47 @@
 </head>
 
 <body>
-	<div th:replace="fragments.html :: siteHeader"></div>
-
+	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<div th:if="${currBook}">
-		<!-- Info Libro -->
-		<div class="book-details">
-			<span class="book-title" th:text="${currBook.title}">Titolo</span>
-			<span class="book-meta" th:text="${'Pubblicato nel: '+currBook.year}">Pubblicato nel: 2000</span>
+
+		<!-- Immagini libro -->
+		<div class="slider-container">
+			<div class="slider" id="imageSlider">
+				<div class="slide" th:each="img : ${currBook.images}">
+					<img th:src="@{'/books/' + ${currBook.id} + '/image/' + ${img.id}}" alt="Copertina Libro"
+						class="slider-image" />
+					<form th:action="@{'/admin/editBooks/' + ${book.id} + '/deleteImage/' + ${img.id}}" method="post">
+						<button type="submit">Cancella</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+			<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/uploadImage'}" method="post"
+				enctype="multipart/form-data">
+				<input type="file" name="images" id="images" accept="image/*" multiple onchange="this.form.submit()" />
+			</form>
 		</div>
 
-		<!-- Foto libro -->
-		<div th:each="img : ${currBook.imageUrls}">
-			<img class="book-cover" th:src="${img}" alt="Copertina libro" />
-		</div>
+		<!-- Info Libro -->
+		<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/update'}" method="post">
+			<label for="title">Titolo:</label>
+			<input type="text" name="title" th:value="${currBook.title}" required />
+			<br>
+			<label for="releaseYear">Anno di pubblicazione:</label>
+			<input type="int" name="releaseYear" th:value="${currBook.releaseYear}" />
+			<br>
+			<button type="submit">Salva modifiche</button>
+		</form>
 
 		<!-- Elenco autori -->
 		<div>
 			<h2>Scritto da:</h2>
 			<ul class="book-list">
 				<li th:each="a : ${currBook.authors}">
-					<a th:href="@{'/editAuthor/' + ${a.id}}" class="book-item">
-						<img class="book-cover" th:src="${a.photoUrl}" alt="Foto Autore" />
+					<a th:href="@{'/admin/editAuthors/' + ${a.id}}" class="book-item">
+						<img class="book-cover" th:if="${a.picture!=null}" th:src="@{'/authors/' + ${a.id} + '/image'}"
+							alt="Foto Autore" />
 						<div class="book-details">
 							<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
 							<span class="book-meta">
@@ -36,12 +56,18 @@
 								<span th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
 									Data di nascita:</span>
 							</span>
-							<a th:href="@{'/editBook/' + ${currBook.id} + '/deleteAuthor/' + ${a.id}}">Rimuovi</a>
+							<!-- Solo per utenti ADMIN -->
+							<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+								<a th:href="@{'/admin/editBooks/' + ${currBook.id} + '/deleteAuthors/' + ${a.id}}">
+									Rimuovi</a>
+							</div>
 						</div>
 					</a>
 				</li>
-				<a th:href="@{'/editBook/' + ${currBook.id} + '/selectAuthor'}">Aggiungi autore</a>
 			</ul>
+			<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+				<h2><a th:href="@{'/admin/editBooks/' + ${currBook.id} + '/addAuthors'}">Aggiungi autore</a></h2>
+			</div>
 		</div>
 
 	</div>

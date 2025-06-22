@@ -8,9 +8,11 @@
 </head>
 
 <body>
-	<div th:replace="fragments.html :: siteHeader"></div>
-	<h1 th:if="${allBooks.isEmpty()}">Non sono presenti libri nel sistema.</h1>
-	<div th:replace="fragments.html :: allBooksList(allBooks)"></div>
+	<div th:replace="~{fragments.html :: siteHeader}"></div>
+	<div th:if="${allBooks.isEmpty()}">
+		<h1>Non sono presenti libri nel sistema.</h1>
+	</div>
+	<div th:unless="${allBooks.isEmpty()}" th:replace="fragments.html :: allBooksList(${allBooks})"></div>
 </body>
 
 </html>

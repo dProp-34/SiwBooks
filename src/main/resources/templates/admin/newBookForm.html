@@ -8,7 +8,7 @@
 </head>
 
 <body>
-	<div th:replace="fragments.html :: siteHeader"></div>
+	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<h1>Inserisci Nuovo Libro</h1>
 
 	<form th:action="@{/book}" method="POST" th:object="${currBook}">

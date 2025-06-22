@@ -31,3 +31,27 @@
 	font-size: 0.9rem;
 	color: #666;
 }
+
+.slider-container {
+	overflow-x: auto;
+	white-space: nowrap;
+	padding: 10px 0;
+}
+
+.slider {
+	display: flex;
+	gap: 20px;
+}
+
+.slide {
+	display: inline-block;
+	text-align: center;
+}
+
+.slider-image {
+	height: 200px;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	display: block;
+	margin-bottom: 5px;
+}

@@ -8,18 +8,18 @@
 </head>
 
 <body>
-	<div th:replace="fragments.html :: siteHeader"></div>
+	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<div th:if="${currBook}">
-		<div class="book-details">
+		<div class="book-item">
+
+			<!-- Foto libro -->
+			<div th:each="img : ${currBook.images}">
+				<img class="book-cover" alt="Copertina libro" />
+			</div>
 
 			<!-- Info Libro -->
 			<span class="book-title" th:text="${currBook.title}">Titolo</span>
-			<span class="book-meta" th:text="${'Pubblicato nel: '+currBook.year}">Pubblicato nel: 2000</span>
-		</div>
-
-		<!-- Foto libro -->
-		<div th:each="img : ${currBook.imageUrls}">
-			<img class="book-cover" th:src="${img}" alt="Copertina libro" />
+			<span th:text="${'Pubblicato nel: '+currBook.releaseYear}">Pubblicato nel: 2000</span>
 		</div>
 
 		<!-- Elenco autori -->

@@ -1,16 +1,11 @@
 package it.uniroma3.siw.service;
 
-import java.io.IOException;
 import java.time.LocalDate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.model.Book;
-import it.uniroma3.siw.model.Image;
 import it.uniroma3.siw.repository.AuthorRepository;
 import it.uniroma3.siw.repository.BookRepository;
 
@@ -71,18 +66,6 @@ public class AuthorService {
 		author.getBooks().remove(book);
 
 		bookRepository.save(book);
-		authorRepository.save(author);
-	}
-
-	public void saveAuthorPicture(Long authorId, MultipartFile imageFile) throws IOException {
-		Author author = authorRepository.findById(authorId)
-				.orElseThrow(() -> new IllegalArgumentException("Autore non trovato"));
-		Image img = new Image();
-		img.setName(imageFile.getOriginalFilename());
-		img.setContentType(imageFile.getContentType());
-		img.setBytes(imageFile.getBytes());
-
-		author.setPicture(img);
 		authorRepository.save(author);
 	}
 

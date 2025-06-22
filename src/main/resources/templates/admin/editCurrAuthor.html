@@ -8,43 +8,83 @@
 </head>
 
 <body>
-	<div th:replace="fragments.html :: siteHeader"></div>
+	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<div th:if="${currAuthor}">
-		<div class="book-item">
 
-			<!-- Foto autore -->
-			<img class="book-cover" th:if="${a.picture!=null}" th:src="@{'/authors/' + ${currAuthor.id} + '/image'}"
-				alt="Foto Autore" />
+		<script>
+			function toggleSubmit() {
+				const fileInput = document.getElementById("image");
+				const submitBtn = document.getElementById("submitBtn");
+				if (fileInput.files.length > 0) {
+					submitBtn.style.display = "inline-block";
+				} else {
+					submitBtn.style.display = "none";
+				}
+			}
+		</script>
 
-			<!-- Form caricamento foto -->
-			<div>
-				<form th:action="@{'/admin/editAuthor/' + ${currAuthor.id} + '/uploadPhoto'}" method="post"
-					enctype="multipart/form-data">
-					<label for="image">Carica nuova foto:</label>
-					<input type="file" name="image" accept="image/*" required />
-					<button type="submit">Carica</button>
-				</form>
-			</div>
-
-			<!-- Info autore -->
-			<div class="book-details">
-				<span class="book-title" th:text="${currAuthor.name + ' ' + currAuthor.surname}">Nome Cognome</span>
-				<span th:text="${'Nazionalità: '+ currAuthor.nationality}">Nazionalità:</span>
-				<span th:text="${'Data di nascita: '+ #temporals.format(currAuthor.dateOfBirth, 'dd/MM/yyyy')}">
-					Data di nascita:</span>
-				<span th:if="${currAuthor.dateOfDeath != null}"
-					th:text="${'Data di morte: '+ #temporals.format(currAuthor.dateOfDeath, 'dd/MM/yyyy')}">
-					Data di morte:</span>
-			</div>
+		<!-- Foto autore -->
+		<div>
+			<img class="book-cover" th:if="${currAuthor.picture!=null}"
+				th:src="@{'/authors/' + ${currAuthor.id} + '/image'}" alt="Foto Autore" />
 		</div>
+		<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+			<form th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/uploadImage'}" method="post"
+				enctype="multipart/form-data">
+				<label for="image">Carica foto:</label>
+				<input type="file" name="image" accept="image/*" required onchange="toggleSubmit()" />
+				<button type="submit" id="submitBtn" style="display:none;">Conferma</button>
+			</form>
+		</div>
+
+		<!-- Info autore -->
+		<form th:action="@{'/admin/editAuthor/' + ${currAuthor.id} + '/update'}" method="post">
+			<label for="name">Nome:</label>
+			<input type="text" name="name" th:value="${currAuthor.name}" required />
+			<br>
+			<label for="surname">Cognome:</label>
+			<input type="text" name="surname" th:value="${currAuthor.surname}" required />
+			<br>
+			<label for="nationality">Nazionalità:</label>
+			<input type="text" name="nationality" th:value="${currAuthor.nationality}" />
+			<br>
+			<label for="dateOfBirth">Data di nascita:</label>
+			<input type="date" name="dateOfBirth" th:value="${currAuthor.dateOfBirth}" required />
+			<br>
+			<label for="dateOfDeath">Data di morte:</label>
+			<input type="date" name="dateOfDeath" th:value="${currAuthor.dateOfDeath}" />
+			<br>
+			<button type="submit">Salva modifiche</button>
+		</form>
 
 		<!-- Elenco libri -->
 		<div>
 			<h2>Libri pubblicati:</h2>
-			<div th:replace="fragments.html :: editAllBooksList(${currAuthor.books})"></div>
+			<ul class="book-list">
+				<li th:each="b : ${currAuthor.books}">
+					<a th:href="@{'/admin/editBooks/' + ${b.id}}" class="book-item">
+						<img class="book-cover" th:if="${not #lists.isEmpty(b.images)}" th:src="${b.images[0]}"
+							alt="Copertina libro" />
+						<div class="book-details">
+							<span class="book-title" th:text="${b.title}">Titolo</span>
+							<span class="book-meta"
+								th:text="${#lists.isEmpty(b.authors) ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
+								Nome Cognome, 2000</span>
+							<!-- Solo per utenti ADMIN -->
+							<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+								<a th:href="@{'/admin/editAuthors/' + ${currAuthor.id} + '/deleteBooks/' + ${b.id}}">
+									Rimuovi</a>
+							</div>
+						</div>
+					</a>
+				</li>
+			</ul>
+			<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+				<h2><a th:href="@{'/admin/editAuthors/' + ${currAuthor.id} + '/addBooks'}">Aggiungi libro</a></h2>
+			</div>
 		</div>
-	</div>
 
+	</div>
 	<h1 th:unless="${currAuthor}">L'autore non è presente nel sistema.</h1>
 </body>
 
