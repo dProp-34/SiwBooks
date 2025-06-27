@@ -341,6 +341,10 @@ input[type="file"]:hover {
 	background: rgba(0, 173, 144, 0.05);
 }
 
+.form-group {
+	padding: 0em 1em;
+}
+
 /* Bottoni moderni */
 button,
 .btn {
@@ -418,7 +422,6 @@ a:hover {
 }
 
 /* Messaggi di errore */
-span[style*="color:red"],
 .error {
 	color: #e74c3c;
 	font-size: 0.875rem;

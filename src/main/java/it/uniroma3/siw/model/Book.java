@@ -22,7 +22,7 @@ public class Book {
 	private Long id;
 	@NotBlank
 	private String title;
-	@Min(1900)
+	@Min(1700)
 	@Max(2100)
 	private int releaseYear;
 	@ManyToMany // The mappedBy attribute is only required on the inverse side

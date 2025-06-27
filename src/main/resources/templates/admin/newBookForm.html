@@ -14,26 +14,26 @@
 
 		<h1>Inserisci Nuovo Libro</h1>
 
-		<form th:action="@{/books}" method="POST" th:object="${currBook}" enctype="multipart/form-data">
-			<div>
-				Titolo:
-				<input type="text" th:field="*{title}" />
-				<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+		<form th:action="@{/admin/books}" method="POST" th:object="${currBook}" enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="title">Titolo:</label>
+				<input type="text" id="title" th:field="*{title}" />
+				<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="releaseYear">Anno di pubblicazione:</label>
+				<input type="number" id="releaseYear" th:field="*{releaseYear}" min="1700" max="2100" />
+				<span th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}" class="error"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="imageFiles">Immagini libro:</label>
+				<input type="file" id="imageFiles" name="imageFiles" accept="image/*" multiple />
 			</div>
 
 			<div>
-				Anno di pubblicazione:
-				<input type="text" th:field="*{releaseYear}" />
-				<span th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}"></span>
-			</div>
-
-			<div>
-				Immagini libro:
-				<input type="file" name="imageFiles" accept="image/*" multiple />
-			</div>
-
-			<div>
-				<button type="submit">Conferma</button>
+				<button type="submit" class="btn">Conferma</button>
 			</div>
 		</form>
 

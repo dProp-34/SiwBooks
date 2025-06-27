@@ -15,20 +15,25 @@
 		<div th:if="${currBook and #authorization.expression('hasAuthority(''ADMIN'')')}">
 
 			<!-- Info Libro -->
-			<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/update'}" method="post">
-				<label for="title">Titolo:</label>
-				<input type="text" name="title" th:value="${currBook.title}" required />
-				<br><br>
-				<label for="releaseYear">Anno di pubblicazione:</label>
-				<input type="int" name="releaseYear" th:value="${currBook.releaseYear}" required />
-				<br><br><br>
+			<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/update'}" method="post" th:object="${currBook}">
+				<div class="form-group">
+					<label for="title">Titolo:</label>
+					<input type="text" id="title" th:field="*{title}" required />
+					<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="releaseYear">Anno di pubblicazione:</label>
+					<input type="number" id="releaseYear" th:field="*{releaseYear}" min="1700" max="2100" required />
+					<span th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}" class="error"></span>
+				</div>
+
 				<button class="btn" type="submit">Salva modifiche</button>
 			</form>
 
 			<!-- Immagini libro -->
 			<div class="slider-container">
 				<div class="slider" id="imageSlider">
-					<!-- th:if="${currBook.images != null and !currBook.images.empty}" -->
 					<div class="slides" th:each="img : ${currBook.images}">
 						<img class="slider-image" th:src="@{'/image/' + ${img.id}}" alt="Copertina libro" />
 
@@ -39,43 +44,44 @@
 					</div>
 
 					<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/image'}" method="post"
-						enctype="multipart/form-data"> <label>Aggiungi immagine:</label>
-						<input type="file" name="imageFiles" accept="image/*" multiple onchange="this.form.submit()" />
+						enctype="multipart/form-data">
+						<label for="imageFiles">Aggiungi immagine:</label>
+						<input type="file" id="imageFiles" name="imageFiles" accept="image/*" multiple
+							onchange="this.form.submit()" />
 					</form>
 				</div>
 			</div>
 
 			<!-- Elenco autori -->
-			<div> <!-- th:if="${currBook.authors != null and !currBook.authors.empty}" -->
+			<div>
 				<h2>Scritto da:</h2>
 				<ul class="book-list">
 					<li th:each="a : ${currBook.authors}">
 						<a th:href="@{'/admin/editAuthors/' + ${a.id}}" class="book-item">
-							<img class="book-cover" th:if="${a.picture!=null}"
-								th:src="@{'/authors/' + ${a.id} + '/image'}" alt="Foto Autore" />
+							<img class="book-cover" th:if="${a.picture!=null}" th:src="@{'/image/' + ${a.picture.id}}"
+								alt="Foto Autore" />
 							<div class="book-details">
 								<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
 								<span class="book-meta">
-									<span th:text="${'Nazionalità: '+ a.nationality}"></span>
+									<span th:text="${'Nazionalità: '+ a.nationality}"></span><br>
 									<span
-										th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
-										Data di nascita:</span>
+										th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}"></span>
 								</span>
 
 								<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/deleteAuthors/' + ${a.id}}"
-									method="post"> <button class="btn-danger" type="submit">Rimuovi</button>
+									method="post">
+									<button class="btn-danger" type="submit">Rimuovi</button>
 								</form>
 							</div>
 						</a>
 					</li>
-
-					<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/addAuthors'}" method="post">
-						<button class="btn" type="submit">Aggiungi autore</button>
-					</form>
 				</ul>
+
+				<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/addAuthors'}" method="post">
+					<button class="btn" type="submit">Aggiungi autore</button>
+				</form>
 			</div>
 
-			<!-- Messaggio se il libro non esiste -->
 		</div>
 		<h2 th:unless="${currBook}">Il libro non è presente nel sistema.</h2>
 		<h2 th:unless="${#authorization.expression('hasAuthority(''ADMIN'')')}">

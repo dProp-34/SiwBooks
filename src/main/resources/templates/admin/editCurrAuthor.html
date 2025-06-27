@@ -15,39 +15,56 @@
 		<div th:if="${currAuthor and #authorization.expression('hasAuthority(''ADMIN'')')}">
 
 			<!-- Info autore -->
-			<form th:action="@{'/admin/editAuthor/' + ${currAuthor.id} + '/update'}" method="post">
-				<label for="name">Nome:</label>
-				<input type="text" name="name" th:value="${currAuthor.name}" required />
-				<br><br>
-				<label for="surname">Cognome:</label>
-				<input type="text" name="surname" th:value="${currAuthor.surname}" required />
-				<br><br>
-				<label for="nationality">Nazionalità:</label>
-				<input type="text" name="nationality" th:value="${currAuthor.nationality}" />
-				<br><br>
-				<label for="dateOfBirth">Data di nascita:</label>
-				<input type="date" name="dateOfBirth" th:value="${currAuthor.dateOfBirth}" required />
-				<br><br>
-				<label for="dateOfDeath">Data di morte:</label>
-				<input type="date" name="dateOfDeath" th:value="${currAuthor.dateOfDeath}" />
-				<br><br><br>
+			<form th:action="@{'/admin/editAuthor/' + ${currAuthor.id} + '/update'}" method="post"
+				th:object="${currAuthor}">
+				<div class="form-group">
+					<label for="name">Nome:</label>
+					<input type="text" id="name" th:field="*{name}" required />
+					<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="surname">Cognome:</label>
+					<input type="text" id="surname" th:field="*{surname}" required />
+					<span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" class="error"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="nationality">Nazionalità:</label>
+					<input type="text" id="nationality" th:field="*{nationality}" />
+					<span th:if="${#fields.hasErrors('nationality')}" th:errors="*{nationality}" class="error"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="dateOfBirth">Data di nascita:</label>
+					<input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" required />
+					<span th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="error"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="dateOfDeath">Data di morte:</label>
+					<input type="date" id="dateOfDeath" th:field="*{dateOfDeath}" />
+					<span th:if="${#fields.hasErrors('dateOfDeath')}" th:errors="*{dateOfDeath}" class="error"></span>
+				</div>
+
 				<button class="btn" type="submit">Salva modifiche</button>
 			</form>
 
 			<!-- Foto autore -->
 			<div th:if="${currAuthor.picture!=null}">
-				<img class="book-cover" th:src="@{'/image/' + ${currAuthor.image.id}}" alt="Foto autore" />
+				<img class="book-cover" th:src="@{'/image/' + ${currAuthor.picture.id}}" alt="Foto autore" />
 
 				<form
-					th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/image/' + ${currAuthor.image.id} + '/delete'}"
+					th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/image/' + ${currAuthor.picture.id} + '/delete'}"
 					method="post">
-					<button class="btn-danger" type="submit">Conferma</button>
+					<button class="btn-danger" type="submit">Elimina foto</button>
 				</form>
 			</div>
 			<div th:unless="${currAuthor.picture!=null}">
 				<form th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/image'}" method="post"
-					enctype="multipart/form-data"> <label>Carica foto:</label>
-					<input type="file" name="imageFile" accept="image/*" onchange="this.form.submit()" />
+					enctype="multipart/form-data">
+					<label for="imageFile">Carica foto:</label>
+					<input type="file" id="imageFile" name="imageFile" accept="image/*" onchange="this.form.submit()" />
 				</form>
 			</div>
 
@@ -58,31 +75,30 @@
 					<li th:each="b : ${currAuthor.books}">
 						<a th:href="@{'/admin/editBooks/' + ${b.id}}" class="book-item">
 							<img class="book-cover" th:if="${b.images!=null and !b.images.empty}"
-								alt="Copertina libro" />
+								th:src="@{'/image/' + ${b.images[0].id}}" alt="Copertina libro" />
 							<div class="book-details">
 								<span class="book-title" th:text="${b.title}">Titolo</span>
-								<span class="book-meta"
-									th:text="${b.authors==null or b.authors.empty ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
-									Nome Cognome, 2000</span>
+								<span class="book-meta" th:text="${b.releaseYear}">2000</span>
 
 								<form
 									th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/deleteBooks/' + ${b.id}}"
-									method="post"> <button class="btn-danger" type="submit">Rimuovi</button>
+									method="post">
+									<button class="btn-danger" type="submit">Rimuovi</button>
+								</form>
 							</div>
 						</a>
 					</li>
-
-					<form th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/addBooks'}" method="post">
-						<button class="btn" type="submit">Aggiungi libro</button>
-					</form>
 				</ul>
+
+				<form th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/addBooks'}" method="post">
+					<button class="btn" type="submit">Aggiungi libro</button>
+				</form>
 			</div>
 
-			<!-- Messaggio se l'autore non esiste -->
 		</div>
 		<h2 th:unless="${currAuthor}">L'autore non è presente nel sistema.</h2>
 		<h2 th:unless="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-			Solo un amministratore può modificare questo libro.</h2>
+			Solo un amministratore può modificare questo autore.</h2>
 
 	</div>
 </body>

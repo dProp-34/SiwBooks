@@ -14,44 +14,44 @@
 
 		<h1>Inserisci Nuovo Autore</h1>
 
-		<form th:action="@{/authors}" method="POST" th:object="${currAuthor}" enctype="multipart/form-data">
-			<div>
-				Nome:
-				<input type="text" th:field="*{name}" />
-				<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+		<form th:action="@{/admin/authors}" method="POST" th:object="${currAuthor}" enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="name">Nome:</label>
+				<input type="text" id="name" th:field="*{name}" />
+				<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="surname">Cognome:</label>
+				<input type="text" id="surname" th:field="*{surname}" />
+				<span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" class="error"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="dateOfBirth">Data di nascita:</label>
+				<input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" />
+				<span th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="error"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="dateOfDeath">Data di morte (opzionale):</label>
+				<input type="date" id="dateOfDeath" th:field="*{dateOfDeath}" />
+				<span th:if="${#fields.hasErrors('dateOfDeath')}" th:errors="*{dateOfDeath}" class="error"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="nationality">Nazionalità:</label>
+				<input type="text" id="nationality" th:field="*{nationality}" />
+				<span th:if="${#fields.hasErrors('nationality')}" th:errors="*{nationality}" class="error"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="imageFile">Foto autore:</label>
+				<input type="file" id="imageFile" name="imageFile" accept="image/*" />
 			</div>
 
 			<div>
-				Cognome:
-				<input type="text" th:field="*{surname}" />
-				<span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></span>
-			</div>
-
-			<div>
-				Data di nascita:
-				<input type="date" th:field="*{dateOfBirth}" />
-				<span th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></span>
-			</div>
-
-			<div>
-				Data di morte (opzionale):
-				<input type="date" th:field="*{dateOfDeath}" />
-				<span th:if="${#fields.hasErrors('dateOfDeath')}" th:errors="*{dateOfDeath}"></span>
-			</div>
-
-			<div>
-				Nazionalità:
-				<input type="text" th:field="*{nationality}" />
-				<span th:if="${#fields.hasErrors('nationality')}" th:errors="*{nationality}"></span>
-			</div>
-
-			<div>
-				Foto autore:
-				<input type="file" name="imageFile" accept="image/*" />
-			</div>
-
-			<div>
-				<button type="submit">Conferma</button>
+				<button type="submit" class="btn">Conferma</button>
 			</div>
 		</form>
 
