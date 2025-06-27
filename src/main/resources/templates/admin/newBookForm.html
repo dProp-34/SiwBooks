@@ -1,44 +1,43 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Nuovo Libro</title>
 	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
-	<h1>Inserisci Nuovo Libro</h1>
+	<div class="page">
 
-	<form th:action="@{/book}" method="POST" th:object="${currBook}">
-		<div>
-			Titolo:
-			<input type="text" th:field="*{title}" />
-			<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
-		</div>
+		<h1>Inserisci Nuovo Libro</h1>
 
-		<div>
-			Anno di pubblicazione (YYYY):
-			<input type="text" th:field="*{releaseYear}" placeholder="es. 2020" />
-			<span th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}"></span>
-		</div>
-
-		<div id="imageUrlsContainer">
-			<!-- Inizialmente uno solo -->
+		<form th:action="@{/books}" method="POST" th:object="${currBook}" enctype="multipart/form-data">
 			<div>
-				URL immagine 1:
-				<input type="url" name="imageUrls[0]" />
+				Titolo:
+				<input type="text" th:field="*{title}" />
+				<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
 			</div>
-		</div>
-		<div>
-			<button type="button" onclick="addImageUrlField()">+ Aggiungi URL</button>
-		</div>
 
-		<div>
-			<button type="submit">Conferma</button>
-		</div>
-	</form>
+			<div>
+				Anno di pubblicazione:
+				<input type="text" th:field="*{releaseYear}" />
+				<span th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}"></span>
+			</div>
+
+			<div>
+				Immagini libro:
+				<input type="file" name="imageFiles" accept="image/*" multiple />
+			</div>
+
+			<div>
+				<button type="submit">Conferma</button>
+			</div>
+		</form>
+
+	</div>
 </body>
 
 </html>

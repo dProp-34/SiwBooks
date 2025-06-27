@@ -5,18 +5,22 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.model.Image;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
+import it.uniroma3.siw.service.ImageService;
 import jakarta.validation.Valid;
 
 // Il Controller riceve la richiesta HTTP, ed in base a questa interagisce con
@@ -31,6 +35,8 @@ public class BookController {
 	BookService bookService;
 	@Autowired
 	AuthorService authorService;
+	@Autowired
+	ImageService imageService;
 
 	/*
 	 * Se l'utente clicca su 'Mostra Libri', viene mostrata la lista di tutti i
@@ -43,6 +49,7 @@ public class BookController {
 	}
 
 	/* Se l'utente clicca su un libro, viene mostrata la pagina di quel libro */
+	@Transactional
 	@GetMapping("/books/{id}")
 	public String findById(@PathVariable Long id, Model model) {
 		/*
@@ -51,34 +58,38 @@ public class BookController {
 		 * This way, inside book.html all of the book’s properties can be accessed:
 		 * <h1 th:text="${currBook.title}">Default Title</h1>
 		 */
-		model.addAttribute("currBook", this.bookService.findById(id));
+		Book book = this.bookService.findById(id);
+		book.getImages().size(); // forza l'inizializzazione
+		model.addAttribute("currBook", book);
 		return "currBook";
 	}
 
 	/*
-	 * Se l'amministratore clicca su 'Inserisci nuovo libro' viene mostrato questo
-	 * form
+	 * Se l'amministratore clicca su 'Crea nuovo libro'
+	 * viene mostrato questo form
 	 */
 	@GetMapping("/admin/newBookForm")
 	public String newBookForm(Model model) {
 		model.addAttribute("currBook", new Book());
-		return "newBookForm";
+		return "admin/newBookForm";
 	}
 
 	/*
 	 * Dopo che l'utente ha compilato la form, il nuovo libro viene aggiunto al
 	 * sistema e viene mostrato all'utente
 	 */
+	@Transactional
 	@PostMapping("/books")
 	public String saveBook(@Valid @ModelAttribute("currBook") Book book, BindingResult bindingResult,
-			Model model) {
-		if (bindingResult.hasErrors()) {
-			return "newBookForm";
-		} else {
-			Book savedBook = this.bookService.save(book);
-			model.addAttribute("currBook", savedBook);
-			return "redirect:/books/" + savedBook.getId();
-		}
+			@RequestParam MultipartFile[] imageFiles, Model model) {
+		if (bindingResult.hasErrors())
+			return "admin/newBookForm";
+		Book savedBook = this.bookService.save(book);
+		for (MultipartFile imageFile : imageFiles)
+			if (!imageFile.isEmpty())
+				imageService.saveImageToBook(savedBook.getId(), imageFile);
+		model.addAttribute("currBook", savedBook);
+		return "redirect:/admin/editBooks";
 	}
 
 	/*
@@ -112,7 +123,7 @@ public class BookController {
 	public String deleteBookById(@PathVariable Long id, Model model) {
 		this.bookService.deleteBookById(id);
 		model.addAttribute("allBooks", this.bookService.findAll());
-		return "redirect:/admin/editAllBooks";
+		return "redirect:/admin/editBooks";
 	}
 
 	/* Rimuove un autore dal libro */
@@ -146,11 +157,12 @@ public class BookController {
 		existingBook.setTitle(updatedBook.getTitle());
 		existingBook.setReleaseYear(updatedBook.getReleaseYear());
 		this.bookService.save(existingBook);
-		return "redirect:/admin/editBooks/" + id;
+		return "redirect:/admin/editBooks";
 	}
 
-	@GetMapping("/books/{id}/imageIds")
 	@ResponseBody
+	@Transactional
+	@GetMapping("/books/{id}/imageIds")
 	public List<Long> getBookImageIds(@PathVariable Long id) {
 		Book book = bookService.findById(id);
 		if (book == null)

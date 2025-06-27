@@ -4,16 +4,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.model.Image;
 import it.uniroma3.siw.repository.AuthorRepository;
 import it.uniroma3.siw.repository.BookRepository;
 import it.uniroma3.siw.repository.ImageRepository;
-import jakarta.transaction.Transactional;
 
 @Service
 public class ImageService {

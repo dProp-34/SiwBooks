@@ -21,11 +21,9 @@ public class AuthenticationController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("/register")
-	public String showRegisterForm(Model model) {
-		model.addAttribute("user", new User());
-		model.addAttribute("credentials", new Credentials());
-		return "/formRegistrati.html";
+	@GetMapping("/")
+	public String index() {
+		return "index";
 	}
 
 	@GetMapping("/login")
@@ -33,17 +31,14 @@ public class AuthenticationController {
 		return "/formLogin.html";
 	}
 
-	@GetMapping("/")
-	public String index() {
-		return "index";
+	@GetMapping("/register")
+	public String showRegisterForm(Model model) {
+		model.addAttribute("user", new User());
+		model.addAttribute("credentials", new Credentials());
+		return "/formRegistrati.html";
 	}
 
-	/*
-	 * @GetMapping("/success")
-	 * public String defaultAfterLogin(Model model) {
-	 */
-
-	@PostMapping({ "/register" })
+	@PostMapping("/register")
 	public String registerUser(@Valid @ModelAttribute User user, BindingResult userBindingResult,
 			@Valid @ModelAttribute Credentials credentials, BindingResult credentialsBindingResult, Model model) {
 		if (!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {

@@ -1,44 +1,45 @@
 ﻿<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
 	<div th:fragment="siteHeader">
-		<header style="display: flex; justify-content: space-between; align-items: center;
-        padding: 0.5rem 1rem; border-bottom: 1px solid #ccc;">
-
-			<!-- Sezione sinistra: logo e navigazione -->
-			<div style="display: flex; align-items: center;">
-				<a href="/"><img src="/images/logo-siw.png" width="175" alt="Logo SIW" /></a>
-				<nav style="display: flex; gap: 1rem; margin-left: 1rem;">
-					<a th:href="@{/books}">Libri</a>
-					<a th:href="@{/authors}">Autori</a>
-				</nav>
-			</div>
-
-			<!-- Sezione destra: login/logout -->
-			<div style="display: flex; gap: 0.75rem; margin-left: 1rem;">
-				<div th:if="${userDetails}">
-					<nav style="display: flex; gap: 1rem; margin-left: 1rem;">
-						<span th:text="${userDetails.username}"></span>
-						<a href="/logout">(Logout)</a>
+		<header>
+			<div>
+				<!-- Sezione sinistra: logo/navigazione -->
+				<div class="logo-nav">
+					<a href="/"><img src="/images/logo-siw.png" width="150" alt="Logo SIW" /></a>
+					<nav>
+						<a th:href="@{/books}">Libri</a>
+						<a th:href="@{/authors}">Autori</a>
 					</nav>
 				</div>
-				<div th:unless="${userDetails}">
-					<a href="/login">Login</a>
+				<!-- Sezione destra: login/logout -->
+				<div class="user-section">
+					<div th:if="${userDetails}">
+						<span th:text="${userDetails.username}">utente</span>
+						<!-- TODO implementa logout -->
+						<a>Logout</a>
+						</nav>
+					</div>
+					<div th:unless="${userDetails}">
+						<a th:href="@{/login}">Login</a>
+					</div>
 				</div>
 			</div>
 		</header>
+		<br>
 	</div>
 
 	<div th:fragment="allAuthorsList(allAuthors)">
 		<ul class="book-list">
 			<li th:each="a : ${allAuthors}">
 				<a th:href="@{'/authors/' + ${a.id}}" class="book-item">
-					<img class="book-cover" th:if="${a.picture != null}" th:src="@{'/images/' + ${a.picture.id}}"
+					<img class="book-cover" th:if="${a.picture != null}" th:src="@{'/image/' + ${a.picture.id}}"
 						alt="Foto Autore" />
 					<div class="book-details">
 						<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
@@ -47,6 +48,23 @@
 							<span th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
 								Data di nascita:</span>
 						</span>
+					</div>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div th:fragment="allBooksList(allBooks)">
+		<ul class="book-list">
+			<li th:each="b : ${allBooks}">
+				<a th:href="@{'/books/' + ${b.id}}" class="book-item">
+					<img class="book-cover" th:if="${b.images!=null and !b.images.empty}"
+						th:src="@{'/image/' + ${b.images[0].id}}" alt="Copertina libro" />
+					<div class="book-details">
+						<span class="book-title" th:text="${b.title}">Titolo</span>
+						<span class="book-meta"
+							th:text="${b.authors==null or b.authors.empty ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
+							Nome Cognome, 2000</span>
 					</div>
 				</a>
 			</li>
@@ -57,7 +75,7 @@
 		<ul class="book-list">
 			<li th:each="a : ${allAuthors}">
 				<a th:href="@{'/admin/editAuthors/' + ${a.id}}" class="book-item">
-					<img class="book-cover" th:if="${a.picture != null}" th:src="@{'/images/' + ${a.picture.id}}"
+					<img class="book-cover" th:if="${a.picture != null}" th:src="@{'/image/' + ${a.picture.id}}"
 						alt="Foto Autore" />
 					<div class="book-details">
 						<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
@@ -68,8 +86,13 @@
 						</span>
 						<!-- Solo per utenti ADMIN -->
 						<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-							<a th:href="@{'/admin/editAuthors/' + ${a.id}}">Modifica</a>
-							<a th:href="@{'/admin/editAuthors/' + ${a.id} + '/delete'}">Cancella</a>
+							<form style="all: unset;" th:action="@{'/admin/editAuthors/' + ${a.id}}" method="post">
+								<button type="submit">Modifica</button>
+							</form>
+							<form style="all: unset;" th:action="@{'/admin/editAuthors/' + ${a.id} + '/delete'}"
+								method="post">
+								<button type="submit">Cancella</button>
+							</form>
 						</div>
 					</div>
 				</a>
@@ -80,38 +103,26 @@
 		</div>
 	</div>
 
-	<div th:fragment="allBooksList(allBooks)">
-		<ul class="book-list">
-			<li th:each="b : ${allBooks}">
-				<a th:href="@{'/books/' + ${b.id}}" class="book-item">
-					<img class="book-cover" th:if="${not #lists.isEmpty(b.images)}"
-						th:src="@{'/images/' + ${b.images[0].id}}" alt="Copertina libro" />
-					<div class="book-details">
-						<span class="book-title" th:text="${b.title}">Titolo</span>
-						<span class="book-meta"
-							th:text="${#lists.isEmpty(b.authors) ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
-							Nome Cognome, 2000</span>
-					</div>
-				</a>
-			</li>
-		</ul>
-	</div>
-
 	<div th:fragment="editBooksList(allBooks)">
 		<ul class="book-list">
 			<li th:each="b : ${allBooks}">
 				<a th:href="@{'/admin/editBooks/' + ${b.id}}" class="book-item">
-					<img class="book-cover" th:if="${not #lists.isEmpty(b.images)}"
-						th:src="@{'/images/' + ${b.images[0].id}}" alt="Copertina libro" />
+					<img class="book-cover" th:if="${b.images!=null and !b.images.empty}"
+						th:src="@{'/image/' + ${b.images[0].id}}" alt="Copertina libro" />
 					<div class="book-details">
 						<span class="book-title" th:text="${b.title}">Titolo</span>
 						<span class="book-meta"
-							th:text="${#lists.isEmpty(b.authors) ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
+							th:text="${b.authors==null or b.authors.empty ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
 							Nome Cognome, 2000</span>
 						<!-- Solo per utenti ADMIN -->
 						<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-							<a th:href="@{'/admin/editBooks/' + ${b.id}}">Modifica</a>
-							<a th:href="@{'/admin/editBooks/' + ${b.id} + '/delete'}">Cancella</a>
+							<form style="all: unset;" th:action="@{'/admin/editBooks/' + ${b.id}}" method="get">
+								<button type="submit">Modifica</button>
+							</form>
+							<form style="all: unset;" th:action="@{'/admin/editBooks/' + ${b.id} + '/delete'}"
+								method="post">
+								<button type="submit" class="btn btn-danger">Cancella</button>
+							</form>
 						</div>
 					</div>
 				</a>
@@ -120,6 +131,8 @@
 		<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
 			<h2><a th:href="@{/admin/newBookForm}">Crea nuovo libro</a></h2>
 		</div>
+	</div>
+
 	</div>
 </body>
 

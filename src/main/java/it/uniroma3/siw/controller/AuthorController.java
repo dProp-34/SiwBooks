@@ -2,17 +2,21 @@ package it.uniroma3.siw.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
+import it.uniroma3.siw.service.ImageService;
 import jakarta.validation.Valid;
 
 @Controller
@@ -22,6 +26,8 @@ public class AuthorController {
 	AuthorService authorService;
 	@Autowired
 	BookService bookService;
+	@Autowired
+	ImageService imageService;
 
 	/* Mostra la lista di tutti gli autori */
 	@GetMapping("/authors")
@@ -37,23 +43,25 @@ public class AuthorController {
 		return "currAuthor";
 	}
 
-	/* Form per inserire un nuovo autore */
+	/* Form per creare un nuovo autore */
 	@GetMapping("/admin/newAuthorForm")
 	public String newAuthorForm(Model model) {
 		model.addAttribute("currAuthor", new Author());
-		return "newAuthorForm";
+		return "admin/newAuthorForm";
 	}
 
 	/* Crea un nuovo autore da aggiungere al sistema */
+	@Transactional
 	@PostMapping("/authors")
 	public String saveAuthor(@Valid @ModelAttribute("currAuthor") Author author, BindingResult bindingResult,
-			Model model) {
-		if (bindingResult.hasErrors()) {
-			return "newAuthorForm";
-		}
+			@RequestParam MultipartFile imageFile, Model model) {
+		if (bindingResult.hasErrors())
+			return "admin/newAuthorForm";
 		Author savedAuthor = this.authorService.save(author);
+		if (!imageFile.isEmpty())
+			imageService.savePictureToAuthor(savedAuthor.getId(), imageFile);
 		model.addAttribute("currAuthor", savedAuthor);
-		return "redirect:/authors/" + savedAuthor.getId();
+		return "redirect:/admin/editAuthors";
 	}
 
 	/* Pagina per la gestione di tutti gli autori */
@@ -75,7 +83,7 @@ public class AuthorController {
 	public String deleteAuthorById(@PathVariable Long id, Model model) {
 		this.authorService.deleteAuthorById(id);
 		model.addAttribute("allAuthors", this.authorService.findAll());
-		return "redirect:/admin/editAllAuthors";
+		return "redirect:/admin/editAuthors";
 	}
 
 	/* Rimuove un libro dall'autore */

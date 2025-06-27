@@ -1,34 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Seleziona Libro</title>
 	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
-	<h1>Seleziona un libro da aggiungere:</h1>
+	<div class="page">
 
-	<div th:if="${availableBooks != null and #lists.isEmpty(availableBooks) == false}">
-		<ul>
-			<li th:each="book : ${availableBooks}">
-				<span th:text="${book.title+', '+book.year}">Titolo, 2000</span>
-				<!-- Pulsante per aggiungere il libro all'autore -->
-				<form th:action="@{'/editAuthors/' + ${id} + '/addBooks/' + ${book.id}}" method="post"
-					style="display:inline;">
-					<button type="submit">Aggiungi</button>
-				</form>
-			</li>
-		</ul>
+		<h1>Seleziona un libro da aggiungere:</h1>
+
+		<div th:if="${availableBooks != null and #lists.isEmpty(availableBooks) == false}">
+			<ul>
+				<li th:each="book : ${availableBooks}">
+					<span th:text="${book.title+', '+book.year}">Titolo, 2000</span>
+					<!-- Pulsante per aggiungere il libro all'autore -->
+					<form th:action="@{'/editAuthors/' + ${id} + '/addBooks/' + ${book.id}}" method="post"
+						style="display:inline;">
+						<button type="submit">Aggiungi</button>
+					</form>
+				</li>
+			</ul>
+		</div>
+
+		<div th:if="${availableBooks == null or #lists.isEmpty(availableBooks)}">
+			<p>Nessun libro disponibile.</p>
+		</div>
+		<p><a th:href="@{'/editAuthors/' + ${id}}">Torna indietro</a></p>
+
+
 	</div>
-
-	<div th:if="${availableBooks == null or #lists.isEmpty(availableBooks)}">
-		<p>Nessun libro disponibile.</p>
-	</div>
-	<p><a th:href="@{'/editAuthors/' + ${id}}">Torna indietro</a></p>
-
 </body>
 
 </html>

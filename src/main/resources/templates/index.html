@@ -1,31 +1,45 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW Books - Home</title>
 	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
-	<h1>Benvenuto nella libreria digitale S.I.W. BOOKS</h1>
+	<div class="page">
 
-	<!-- Public content - always visible -->
-	<h2>
-		<a th:href="@{/books}">Consulta Libri</a>
-	</h2>
-	<h2>
-		<a th:href="@{/authors}">Consulta Autori</a>
-	</h2>
+		<h1>Benvenuto nella libreria digitale S.I.W. BOOKS</h1>
+		<!-- Contenuto pubblico -->
+		<div
+			style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+			<div class="card-hover"
+				style="background: var(--surface); padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center;">
+				<a th:href="@{/books}" class="btn">Consulta Libri</a>
+				<p style="color: var(--text-secondary); margin-top: 1rem;">Esplora la nostra collezione di libri</p>
+			</div>
+			<div class="card-hover"
+				style="background: var(--surface); padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--shadow); text-align: center;">
+				<a h:href="@{/authors}" class="btn">Consulta Autori</a>
+				<p style="color: var(--text-secondary); margin-top: 1rem;">Scopri gli autori della nostra libreria
+				</p>
+			</div>
+		</div>
 
-	<!-- Admin-only content - only visible to admin users -->
-	<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-		<h2>
-			<a th:href="@{/admin/editBooks}">Gestisci Libri</a>
-		</h2>
-		<h2>
-			<a th:href="@{/admin/editAuthors}">Gestisci Autori</a>
-		</h2>
+		<br> <!-- Contenuto admin-only -->
+		<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="admin-section">
+			<h2>Gestione Amministratore</h2>
+			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+				<a th:href="@{/admin/editBooks}" class="btn btn-secondary">Gestisci Libri</a>
+				<a th:href="@{/admin/editAuthors}" class="btn btn-secondary">Gestisci Autori</a>
+			</div>
+		</div>
+
+	</div>
+
 	</div>
 </body>
 

@@ -1,35 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title th:text="'SIW - ' + ${currBook.title}">SIW - Libro</title>
 	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
-	<div th:if="${currBook}">
-		<div class="book-item">
+	<div class="page">
 
-			<!-- Foto libro -->
-			<div th:each="img : ${currBook.images}">
-				<img class="book-cover" alt="Copertina libro" />
+		<div th:if="${currBook}">
+
+			<!-- Immagini libro -->
+			<div class="slider-container">
+				<div class="slider" id="imageSlider">
+					<div class="slides" th:each="img : ${currBook.images}">
+						<img class="slider-image" th:src="@{'/image/' + ${img.id}}" alt="Copertina libro" />
+					</div>
+				</div>
+
+				<!-- Info Libro -->
+				<span class="book-title" th:text="${currBook.title}">Titolo</span>
+				<span th:text="${'Pubblicato nel: '+currBook.releaseYear}">Pubblicato nel: 2000</span>
 			</div>
 
-			<!-- Info Libro -->
-			<span class="book-title" th:text="${currBook.title}">Titolo</span>
-			<span th:text="${'Pubblicato nel: '+currBook.releaseYear}">Pubblicato nel: 2000</span>
-		</div>
+			<!-- Elenco autori -->
+			<div>
+				<h2>Scritto da:</h2>
+				<div th:replace="fragments.html :: allAuthorsList(${currBook.authors})"></div>
+			</div>
 
-		<!-- Elenco autori -->
-		<div>
-			<h2>Scritto da:</h2>
-			<div th:replace="fragments.html :: allAuthorsList(${currBook.authors})"></div>
 		</div>
+		<h2 th:unless="${currBook}">Il libro non è presente nel sistema.</h2>
 
 	</div>
-	<h1 th:unless="${currBook}">Il libro non è presente nel sistema.</h1>
 </body>
 
 </html>

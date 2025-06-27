@@ -1,34 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Seleziona Autore</title>
 	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
-	<h1>Seleziona un autore da aggiungere:</h1>
+	<div class="page">
 
-	<div th:if="${availableAuthors != null and #lists.isEmpty(availableAuthors) == false}">
-		<ul>
-			<li th:each="author : ${availableAuthors}">
-				<span th:text="${author.name + ' ' + author.surname}">Nome Cognome</span>
-				<!-- Pulsante per aggiungere l'autore al libro -->
-				<form th:action="@{'/editBooks/' + ${id} + '/addAuthors/' + ${author.id}}" method="post"
-					style="display:inline;">
-					<button type="submit">Aggiungi</button>
-				</form>
-			</li>
-		</ul>
+		<h1>Seleziona un autore da aggiungere:</h1>
+
+		<div th:if="${availableAuthors != null and #lists.isEmpty(availableAuthors) == false}">
+			<ul>
+				<li th:each="author : ${availableAuthors}">
+					<span th:text="${author.name + ' ' + author.surname}">Nome Cognome</span>
+					<!-- Pulsante per aggiungere l'autore al libro -->
+					<form th:action="@{'/editBooks/' + ${id} + '/addAuthors/' + ${author.id}}" method="post"
+						style="display:inline;">
+						<button type="submit">Aggiungi</button>
+					</form>
+				</li>
+			</ul>
+		</div>
+
+		<div th:if="${availableAuthors == null or #lists.isEmpty(availableAuthors)}">
+			<p>Nessun autore disponibile.</p>
+		</div>
+		<p><a th:href="@{'/editBooks/' + ${id}}">Torna indietro</a></p>
+
+
 	</div>
-
-	<div th:if="${availableAuthors == null or #lists.isEmpty(availableAuthors)}">
-		<p>Nessun autore disponibile.</p>
-	</div>
-	<p><a th:href="@{'/editBooks/' + ${id}}">Torna indietro</a></p>
-
 </body>
 
 </html>

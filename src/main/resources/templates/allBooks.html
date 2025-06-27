@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Libri</title>
 	<link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
-	<div th:if="${allBooks.isEmpty()}">
-		<h1>Non sono presenti libri nel sistema.</h1>
+	<div class="page">
+
+		<div th:if="${allBooks.isEmpty()}">
+			<h2>Non sono presenti libri nel sistema.</h2>
+		</div>
+		<div th:unless="${allBooks.isEmpty()}" th:replace="fragments.html :: allBooksList(${allBooks})"></div>
+
 	</div>
-	<div th:unless="${allBooks.isEmpty()}" th:replace="fragments.html :: allBooksList(${allBooks})"></div>
 </body>
 
 </html>
