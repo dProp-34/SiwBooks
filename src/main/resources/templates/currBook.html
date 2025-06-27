@@ -10,9 +10,10 @@
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
-	<div class="page">
+	<div class="main-container">
 
 		<div th:if="${currBook}">
+			<h1 th:text="${currBook.title}">Titolo</h1>
 
 			<!-- Immagini libro -->
 			<div class="slider-container">
@@ -21,18 +22,16 @@
 						<img class="slider-image" th:src="@{'/image/' + ${img.id}}" alt="Copertina libro" />
 					</div>
 				</div>
-
-				<!-- Info Libro -->
-				<span class="book-title" th:text="${currBook.title}">Titolo</span>
-				<span th:text="${'Pubblicato nel: '+currBook.releaseYear}">Pubblicato nel: 2000</span>
 			</div>
 
-			<!-- Elenco autori -->
+			<!-- Info Libro -->
 			<div>
+				<h2 th:text="${'Pubblicato nel: ' + currBook.releaseYear}">Pubblicato nel: 2000</h2>
 				<h2>Scritto da:</h2>
 				<div th:replace="fragments.html :: allAuthorsList(${currBook.authors})"></div>
 			</div>
 
+			<!-- Messaggio se il libro non esiste -->
 		</div>
 		<h2 th:unless="${currBook}">Il libro non è presente nel sistema.</h2>
 

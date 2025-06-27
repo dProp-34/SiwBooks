@@ -10,7 +10,7 @@
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
-	<div class="page">
+	<div class="main-container">
 
 		<h1>Benvenuto nella libreria digitale S.I.W. BOOKS</h1>
 		<!-- Contenuto pubblico -->
@@ -32,7 +32,7 @@
 		<br> <!-- Contenuto admin-only -->
 		<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="admin-section">
 			<h2>Gestione Amministratore</h2>
-			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
 				<a th:href="@{/admin/editBooks}" class="btn btn-secondary">Gestisci Libri</a>
 				<a th:href="@{/admin/editAuthors}" class="btn btn-secondary">Gestisci Autori</a>
 			</div>

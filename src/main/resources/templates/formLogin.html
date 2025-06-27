@@ -10,26 +10,26 @@
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
-	<div class="page">
+	<div class="main-container">
 
 		<h1>Login</h1>
-
 		<form th:action="@{/login}" method="POST">
 			<div th:if="${registrationSuccess}" style="color: green; font-weight: bold; margin: 1em 0;">
 				Registrazione completata!</div>
 			<div th:if="${param.error != null}" style="color: red; font-weight: bold; margin: 1em 0;">
 				Username o password errati</div>
+
 			<div>
-				<span>Username:</span>
+				<label>Username</label>
 				<span><input name="username" type="text" required /></span>
 			</div>
 			<div>
-				<span>Password:</span>
+				<label>Password</label>
 				<span><input name="password" type="password" required /></span>
 			</div>
 			<div>
 				<button type="submit">Login</button>
-				<span>oppure</span>
+				<h2> oppure </h2>
 				<button th:href="@{/register}">Registrati</button>
 			</div>
 		</form>

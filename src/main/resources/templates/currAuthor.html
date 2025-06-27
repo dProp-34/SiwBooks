@@ -2,43 +2,43 @@
 <html lang="it" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="'SIW - ' + ${currAuthor.name} + ' ' + ${currAuthor.surname}">SIW - Autore</title>
-  <link rel="stylesheet" href="/css/stile.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'SIW - ' + ${currAuthor.name} + ' ' + ${currAuthor.surname}">SIW - Autore</title>
+    <link rel="stylesheet" href="/css/stile.css" />
 </head>
 
 <body>
-  <div th:replace="~{fragments.html :: siteHeader}"></div>
-  <div class="page">
+    <div th:replace="~{fragments.html :: siteHeader}"></div>
+    <div class="main-container">
 
-    <div th:if="${currAuthor}">
-      <div class="book-item">
+        <div th:if="${currAuthor}">
+            <h1 th:text="${currAuthor.name + ' ' + currAuthor.surname}">Nome Cognome</h1>
 
-        <!-- Foto autore -->
-        <img class="book-cover" th:if="${currAuthor.picture!=null}"
-          th:src="@{'/authors/' + ${currAuthor.id} + '/image'}" alt="Foto Autore" />
+            <!-- Foto autore -->
+            <img class="book-cover" th:if="${currAuthor.picture!=null}" th:src="@{'/image/' + ${currAuthor.picture.id}}"
+                alt="Foto autore" />
 
-        <!-- Info autore -->
-        <span class="book-title" th:text="${currAuthor.name + ' ' + currAuthor.surname}">Nome Cognome</span>
-        <span th:text="${'Nazionalità: '+ currAuthor.nationality}">Nazionalità:</span>
-        <span th:text="${'Data di nascita: '+ #temporals.format(currAuthor.dateOfBirth, 'dd/MM/yyyy')}">
-          Data di nascita:</span>
-        <span th:if="${currAuthor.dateOfDeath != null}"
-          th:text="${'Data di morte: '+ #temporals.format(currAuthor.dateOfDeath, 'dd/MM/yyyy')}">
-          Data di morte:</span>
-      </div>
+            <!-- Info autore -->
+            <div>
+                <h2 th:text="${'Nazionalità: '+ currAuthor.nationality}"></h2>
+                <h2 th:text="${'Data di nascita: '+ #temporals.format(currAuthor.dateOfBirth, 'dd/MM/yyyy')}">
+                    Data di nascita:</h2>
+                <h2 th:if="${currAuthor.dateOfDeath != null}"
+                    th:text="${'Data di morte: '+ #temporals.format(currAuthor.dateOfDeath, 'dd/MM/yyyy')}">
+                    Data di morte:</h2>
+            </div>
+            <!-- Elenco libri -->
+            <div>
+                <h2>Libri pubblicati:</h2>
+                <div th:replace="fragments.html :: allBooksList(${currAuthor.books})"></div>
+            </div>
 
-      <!-- Elenco libri -->
-      <div>
-        <h2>Libri pubblicati:</h2>
-        <div th:replace="fragments.html :: allBooksList(${currAuthor.books})"></div>
-      </div>
+            <!-- Messaggio se il libro non esiste -->
+        </div>
+        <h2 th:unless="${currAuthor}">L'autore non è presente nel sistema.</h2>
 
     </div>
-    <h1 th:unless="${currAuthor}">L'autore non è presente nel sistema.</h1>
-
-  </div>
 </body>
 
 </html>

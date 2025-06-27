@@ -48,22 +48,21 @@ public class AuthConfiguration {
 
 	@Bean
 	SecurityFilterChain configure(final HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.ignoringRequestMatchers("/logout"))
-				.authorizeHttpRequests(requests -> requests
-						.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-						// Allow access to login and register pages
-						.requestMatchers(HttpMethod.GET, "/login", "/register").permitAll()
-						.requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
-						// Allow public access to viewing pages
-						.requestMatchers("/", "/books", "/books/**", "/authors", "/authors/**").permitAll()
-						// Allow public access to images and static resources
-						.requestMatchers("/images/**", "/css/**", "/js/**").permitAll()
-						// Allow public access to author images endpoint
-						.requestMatchers(HttpMethod.GET, "/authors/*/image").permitAll()
-						// Restrict admin/editing functions to authenticated users with ADMIN role
-						.requestMatchers("/admin/**").hasAuthority(ADMIN_ROLE)
-						// IMPORTANT: Change this to permitAll() instead of authenticated()
-						.anyRequest().permitAll())
+		http.authorizeHttpRequests(requests -> requests
+				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+				// Allow access to login and register pages
+				.requestMatchers(HttpMethod.GET, "/login", "/register").permitAll()
+				.requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+				// Allow public access to viewing pages
+				.requestMatchers("/", "/books", "/books/**", "/authors", "/authors/**").permitAll()
+				// Allow public access to images and static resources
+				.requestMatchers("/images/**", "/css/**", "/js/**").permitAll()
+				// Allow public access to author images endpoint
+				.requestMatchers(HttpMethod.GET, "/authors/*/image").permitAll()
+				// Restrict admin/editing functions to authenticated users with ADMIN role
+				.requestMatchers("/admin/**").hasAuthority(ADMIN_ROLE)
+				// IMPORTANT: Change this to permitAll() instead of authenticated()
+				.anyRequest().permitAll())
 				.formLogin(login -> login
 						.loginPage("/login")
 						.permitAll()

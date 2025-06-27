@@ -10,6 +10,7 @@
 	<div th:fragment="siteHeader">
 		<header>
 			<div>
+
 				<!-- Sezione sinistra: logo/navigazione -->
 				<div class="logo-nav">
 					<a href="/"><img src="/images/logo-siw.png" width="150" alt="Logo SIW" /></a>
@@ -22,14 +23,16 @@
 				<div class="user-section">
 					<div th:if="${userDetails}">
 						<span th:text="${userDetails.username}">utente</span>
-						<!-- TODO implementa logout -->
-						<a>Logout</a>
-						</nav>
+						<form th:action="@{/logout}" method="post">
+							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+							<button type="submit">Logout</button>
+						</form>
 					</div>
 					<div th:unless="${userDetails}">
 						<a th:href="@{/login}">Login</a>
 					</div>
 				</div>
+
 			</div>
 		</header>
 		<br>
@@ -40,11 +43,11 @@
 			<li th:each="a : ${allAuthors}">
 				<a th:href="@{'/authors/' + ${a.id}}" class="book-item">
 					<img class="book-cover" th:if="${a.picture != null}" th:src="@{'/image/' + ${a.picture.id}}"
-						alt="Foto Autore" />
+						alt="Foto autore" />
 					<div class="book-details">
 						<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
 						<span class="book-meta">
-							<span th:text="${'Nazionalità: '+ a.nationality}">Nazionalità:</span><br>
+							<span th:text="${'Nazionalità: '+ a.nationality}"></span><br>
 							<span th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
 								Data di nascita:</span>
 						</span>
@@ -76,31 +79,32 @@
 			<li th:each="a : ${allAuthors}">
 				<a th:href="@{'/admin/editAuthors/' + ${a.id}}" class="book-item">
 					<img class="book-cover" th:if="${a.picture != null}" th:src="@{'/image/' + ${a.picture.id}}"
-						alt="Foto Autore" />
+						alt="Foto autore" />
 					<div class="book-details">
 						<span class="book-title" th:text="${a.name + ' ' + a.surname}">Nome Cognome</span>
 						<span class="book-meta">
-							<span th:text="${'Nazionalità: '+ a.nationality}">Nazionalità:</span><br>
+							<span th:text="${'Nazionalità: '+ a.nationality}"></span><br>
 							<span th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
 								Data di nascita:</span>
 						</span>
 						<!-- Solo per utenti ADMIN -->
+						<br>
 						<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-							<form style="all: unset;" th:action="@{'/admin/editAuthors/' + ${a.id}}" method="post">
+							<form style="all: unset;" th:action="@{'/admin/editAuthors/' + ${a.id}}" method="get">
 								<button type="submit">Modifica</button>
 							</form>
 							<form style="all: unset;" th:action="@{'/admin/editAuthors/' + ${a.id} + '/delete'}"
 								method="post">
-								<button type="submit">Cancella</button>
+								<button type="submit" class="btn-danger">Cancella</button>
 							</form>
 						</div>
 					</div>
 				</a>
 			</li>
+			<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+				<a th:href="@{/admin/newAuthorForm}" class="btn">Crea nuovo autore</a>
+			</div>
 		</ul>
-		<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-			<h2><a th:href="@{/admin/newAuthorForm}">Crea nuovo autore</a></h2>
-		</div>
 	</div>
 
 	<div th:fragment="editBooksList(allBooks)">
@@ -115,22 +119,23 @@
 							th:text="${b.authors==null or b.authors.empty ? b.releaseYear : b.authors[0].name + ' ' + b.authors[0].surname + ', ' + b.releaseYear}">
 							Nome Cognome, 2000</span>
 						<!-- Solo per utenti ADMIN -->
+						<br>
 						<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
 							<form style="all: unset;" th:action="@{'/admin/editBooks/' + ${b.id}}" method="get">
 								<button type="submit">Modifica</button>
 							</form>
 							<form style="all: unset;" th:action="@{'/admin/editBooks/' + ${b.id} + '/delete'}"
 								method="post">
-								<button type="submit" class="btn btn-danger">Cancella</button>
+								<button type="submit" class="btn-danger">Cancella</button>
 							</form>
 						</div>
 					</div>
 				</a>
 			</li>
+			<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+				<a th:href="@{/admin/newBookForm}" class="btn">Crea nuovo libro</a>
+			</div>
 		</ul>
-		<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
-			<h2><a th:href="@{/admin/newBookForm}">Crea nuovo libro</a></h2>
-		</div>
 	</div>
 
 	</div>
