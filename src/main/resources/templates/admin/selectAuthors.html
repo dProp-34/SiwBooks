@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Seleziona Autore</title>
-	<link rel="stylesheet" href="/css/stile.css" />
+	<link rel="stylesheet" th:href="@{/css/stile.css}" />
 </head>
 
 <body>
@@ -14,24 +14,37 @@
 
 		<h1>Seleziona un autore da aggiungere:</h1>
 
-		<div th:if="${availableAuthors != null and #lists.isEmpty(availableAuthors) == false}">
-			<ul>
-				<li th:each="author : ${availableAuthors}">
-					<span th:text="${author.name + ' ' + author.surname}">Nome Cognome</span>
-					<!-- Pulsante per aggiungere l'autore al libro -->
-					<form th:action="@{'/editBooks/' + ${id} + '/addAuthors/' + ${author.id}}" method="post"
-						style="display:inline;">
-						<button type="submit">Aggiungi</button>
-					</form>
+		<div th:if="${allAuthors != null and !allAuthors.isEmpty()}">
+			<ul class="book-list">
+				<li th:each="author : ${allAuthors}">
+					<div class="book-item">
+						<img class="book-cover" th:if="${author.picture != null}"
+							th:src="@{'/image/' + ${author.picture.id}}" alt="Foto autore" />
+						<div class="book-details">
+							<span class="book-title" th:text="${author.name + ' ' + author.surname}">Nome Cognome</span>
+							<span class="book-meta">
+								<span th:text="${'Nazionalità: '+ author.nationality}"></span><br>
+								<span
+									th:text="${'Data di nascita: '+ #temporals.format(author.dateOfBirth, 'dd/MM/yyyy')}"></span>
+							</span>
+							<!-- Pulsante per aggiungere l'autore al libro -->
+							<form th:action="@{'/admin/editBooks/' + ${param.bookId} + '/addAuthors/' + ${author.id}}"
+								method="post" style="margin-top: 1rem;">
+								<button type="submit" class="btn">Aggiungi</button>
+							</form>
+						</div>
+					</div>
 				</li>
 			</ul>
 		</div>
 
-		<div th:if="${availableAuthors == null or #lists.isEmpty(availableAuthors)}">
-			<p>Nessun autore disponibile.</p>
+		<div th:if="${allAuthors == null or allAuthors.isEmpty()}">
+			<h2>Nessun autore disponibile per essere aggiunto a questo libro.</h2>
 		</div>
-		<p><a th:href="@{'/editBooks/' + ${id}}">Torna indietro</a></p>
 
+		<div style="margin-top: 2rem;">
+			<a th:href="@{'/admin/editBooks/' + ${param.bookId}}" class="btn btn-secondary">Torna indietro</a>
+		</div>
 
 	</div>
 </body>

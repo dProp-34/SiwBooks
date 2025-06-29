@@ -5,13 +5,13 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Registrati</title>
-	<link rel="stylesheet" href="/css/stile.css" />
+	<link rel="stylesheet" th:href="@{/css/stile.css}" />
 </head>
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<div class="main-container">
-		<h1>Registrazione nuovo utente</h1>
+		<h1>Registrazione</h1>
 
 		<form th:action="@{/register}" method="POST">
 			<!-- USER object binding -->
@@ -21,39 +21,37 @@
 					<input type="text" id="name" th:field="*{name}" required />
 					<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
 				</div>
-
+				<br>
 				<div class="form-group">
 					<label for="surname">Cognome:</label>
 					<input type="text" id="surname" th:field="*{surname}" required />
 					<span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" class="error"></span>
 				</div>
-
+				<br>
 				<div class="form-group">
 					<label for="email">Email:</label>
 					<input type="email" id="email" th:field="*{email}" required />
 					<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></span>
 				</div>
 			</div>
-
 			<!-- CREDENTIALS object binding -->
+			<p> -- Credenziali -- </p><br>
 			<div th:object="${credentials}">
 				<div class="form-group">
 					<label for="username">Username:</label>
 					<input type="text" id="username" th:field="*{username}" required />
 					<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error"></span>
 				</div>
-
+				<br>
 				<div class="form-group">
 					<label for="password">Password:</label>
 					<input type="password" id="password" th:field="*{password}" required />
 					<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></span>
 				</div>
 			</div>
-
-			<div>
-				<button type="submit" class="btn">Registrati</button>
-			</div>
+			<br><button class="btn" type="submit">Registrati</button>
 		</form>
+
 	</div>
 </body>
 

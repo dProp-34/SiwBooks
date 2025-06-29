@@ -79,7 +79,7 @@ public class BookController {
 	 * sistema e viene mostrato all'utente
 	 */
 	@Transactional
-	@PostMapping("/books")
+	@PostMapping("/admin/books")
 	public String saveBook(@Valid @ModelAttribute("currBook") Book book, BindingResult bindingResult,
 			@RequestParam MultipartFile[] imageFiles, Model model) {
 		if (bindingResult.hasErrors())

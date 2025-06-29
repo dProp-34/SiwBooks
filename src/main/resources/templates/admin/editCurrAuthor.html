@@ -5,17 +5,62 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Modifica Autore</title>
-	<link rel="stylesheet" href="/css/stile.css" />
+	<link rel="stylesheet" th:href="@{/css/stile.css}" />
 </head>
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<div class="main-container">
+		<h1>Modifica Autore</h1>
 
-		<div th:if="${currAuthor and #authorization.expression('hasAuthority(''ADMIN'')')}">
+		<div th:if="${currAuthor!=null and #authorization.expression('hasAuthority(''ADMIN'')')}">
+
+			<!-- Foto autore -->
+			<div th:if="${currAuthor.picture != null}" style="display: flex; align-items: center; gap: 0.5rem;">
+				<img class="book-cover" th:src="@{'/image/' + ${currAuthor.picture.id}}" alt="Foto autore" />
+
+				<form
+					th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/image/' + ${currAuthor.picture.id} + '/delete'}"
+					method="post">
+					<button class="btn-danger" type="submit">Elimina foto</button>
+				</form>
+			</div>
+			<div th:unless="${currAuthor.picture != null}">
+				<form th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/image'}" method="post"
+					enctype="multipart/form-data">
+					<label for="imageFile">Carica foto:</label>
+					<input type="file" id="imageFile" name="imageFile" accept="image/*" onchange="this.form.submit()" />
+				</form>
+			</div>
+
+			<!-- Elenco libri -->
+			<div>
+				<br>
+				<h2>Libri pubblicati:</h2>
+				<ul class="book-list">
+					<li th:each="b : ${currAuthor.books}">
+						<a th:href="@{'/admin/editBooks/' + ${b.id}}" class="book-item">
+							<img class="book-cover" th:if="${b.images!=null and !b.images.empty}"
+								th:src="@{'/image/' + ${b.images[0].id}}" alt="Copertina libro" />
+							<div class="book-details">
+								<span class="book-title" th:text="${b.title}">Titolo</span>
+								<span class="book-meta" th:text="${b.releaseYear}">2000</span>
+								<br>
+								<form method="post" class="inline-form"
+									th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/deleteBooks/' + ${b.id}}">
+									<button class="btn-danger" type="submit">Rimuovi</button>
+								</form>
+							</div>
+						</a>
+					</li>
+				</ul>
+
+				<a th:href="@{'/admin/editAuthors/' + ${currAuthor.id} + '/addBooks'}" class="btn">Aggiungi libro</a>
+			</div>
 
 			<!-- Info autore -->
-			<form th:action="@{'/admin/editAuthor/' + ${currAuthor.id} + '/update'}" method="post"
+			<br>
+			<form th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/update'}" method="post"
 				th:object="${currAuthor}">
 				<div class="form-group">
 					<label for="name">Nome:</label>
@@ -46,54 +91,9 @@
 					<input type="date" id="dateOfDeath" th:field="*{dateOfDeath}" />
 					<span th:if="${#fields.hasErrors('dateOfDeath')}" th:errors="*{dateOfDeath}" class="error"></span>
 				</div>
-
+				<br>
 				<button class="btn" type="submit">Salva modifiche</button>
 			</form>
-
-			<!-- Foto autore -->
-			<div th:if="${currAuthor.picture!=null}">
-				<img class="book-cover" th:src="@{'/image/' + ${currAuthor.picture.id}}" alt="Foto autore" />
-
-				<form
-					th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/image/' + ${currAuthor.picture.id} + '/delete'}"
-					method="post">
-					<button class="btn-danger" type="submit">Elimina foto</button>
-				</form>
-			</div>
-			<div th:unless="${currAuthor.picture!=null}">
-				<form th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/image'}" method="post"
-					enctype="multipart/form-data">
-					<label for="imageFile">Carica foto:</label>
-					<input type="file" id="imageFile" name="imageFile" accept="image/*" onchange="this.form.submit()" />
-				</form>
-			</div>
-
-			<!-- Elenco libri -->
-			<div>
-				<h2>Libri pubblicati:</h2>
-				<ul class="book-list">
-					<li th:each="b : ${currAuthor.books}">
-						<a th:href="@{'/admin/editBooks/' + ${b.id}}" class="book-item">
-							<img class="book-cover" th:if="${b.images!=null and !b.images.empty}"
-								th:src="@{'/image/' + ${b.images[0].id}}" alt="Copertina libro" />
-							<div class="book-details">
-								<span class="book-title" th:text="${b.title}">Titolo</span>
-								<span class="book-meta" th:text="${b.releaseYear}">2000</span>
-
-								<form
-									th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/deleteBooks/' + ${b.id}}"
-									method="post">
-									<button class="btn-danger" type="submit">Rimuovi</button>
-								</form>
-							</div>
-						</a>
-					</li>
-				</ul>
-
-				<form th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/addBooks'}" method="post">
-					<button class="btn" type="submit">Aggiungi libro</button>
-				</form>
-			</div>
 
 		</div>
 		<h2 th:unless="${currAuthor}">L'autore non è presente nel sistema.</h2>

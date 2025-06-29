@@ -5,14 +5,14 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Modifica Libro</title>
-	<link rel="stylesheet" href="/css/stile.css" />
+	<link rel="stylesheet" th:href="@{/css/stile.css}" />
 </head>
 
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<div class="main-container">
 
-		<div th:if="${currBook and #authorization.expression('hasAuthority(''ADMIN'')')}">
+		<div th:if="${currBook!=null and #authorization.expression('hasAuthority(''ADMIN'')')}">
 
 			<!-- Info Libro -->
 			<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/update'}" method="post" th:object="${currBook}">

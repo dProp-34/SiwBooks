@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Login</title>
-	<link rel="stylesheet" href="/css/stile.css" />
+	<link rel="stylesheet" th:href="@{/css/stile.css}" />
 </head>
 
 <body>
@@ -27,12 +27,12 @@
 				<label>Password</label>
 				<span><input name="password" type="password" required /></span>
 			</div>
-			<div>
-				<button type="submit">Login</button>
-				<h2> oppure </h2>
-				<button th:href="@{/register}">Registrati</button>
-			</div>
+			<br><button class="btn" type="submit">Login</button>
 		</form>
+		<div>
+			<p>Non sei registrato?</p>
+			<br><a class="btn" th:href="@{/register}">Registrati</a>
+		</div>
 
 	</div>
 </body>

@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Seleziona Libro</title>
-	<link rel="stylesheet" href="/css/stile.css" />
+	<link rel="stylesheet" th:href="@{/css/stile.css}" />
 </head>
 
 <body>
@@ -14,24 +14,34 @@
 
 		<h1>Seleziona un libro da aggiungere:</h1>
 
-		<div th:if="${availableBooks != null and #lists.isEmpty(availableBooks) == false}">
-			<ul>
-				<li th:each="book : ${availableBooks}">
-					<span th:text="${book.title+', '+book.year}">Titolo, 2000</span>
-					<!-- Pulsante per aggiungere il libro all'autore -->
-					<form th:action="@{'/editAuthors/' + ${id} + '/addBooks/' + ${book.id}}" method="post"
-						style="display:inline;">
-						<button type="submit">Aggiungi</button>
-					</form>
+		<div th:if="${allBooks!=null and !allBooks.isEmpty()}">
+			<ul class="book-list">
+				<li th:each="book : ${allBooks}">
+					<div class="book-item">
+						<img class="book-cover" th:if="${book.images != null and !book.images.empty}"
+							th:src="@{'/image/' + ${book.images[0].id}}" alt="Copertina libro" />
+						<div class="book-details">
+							<span class="book-title" th:text="${book.title}">Titolo</span>
+							<span class="book-meta" th:text="${book.releaseYear}">2000</span>
+							<!-- Pulsante per aggiungere il libro all'autore -->
+							<br>
+							<form th:action="@{'/admin/editAuthors/' + ${aId} + '/addBooks/' + ${book.id}}"
+								method="post" class="inline-form">
+								<button type="submit" class="btn">Aggiungi</button>
+							</form>
+						</div>
+					</div>
 				</li>
 			</ul>
 		</div>
 
-		<div th:if="${availableBooks == null or #lists.isEmpty(availableBooks)}">
-			<p>Nessun libro disponibile.</p>
+		<div th:if="${allBooks == null or allBooks.isEmpty()}">
+			<h2>Nessun libro disponibile per essere aggiunto a questo autore.</h2>
 		</div>
-		<p><a th:href="@{'/editAuthors/' + ${id}}">Torna indietro</a></p>
 
+		<div style="margin-top: 2rem;">
+			<a th:href="@{'/admin/editAuthors/' + ${aId}}" class="btn btn-secondary">Torna indietro</a>
+		</div>
 
 	</div>
 </body>

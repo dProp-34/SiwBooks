@@ -52,7 +52,7 @@ public class AuthorController {
 
 	/* Crea un nuovo autore da aggiungere al sistema */
 	@Transactional
-	@PostMapping("/authors")
+	@PostMapping("/admin/authors")
 	public String saveAuthor(@Valid @ModelAttribute("currAuthor") Author author, BindingResult bindingResult,
 			@RequestParam MultipartFile imageFile, Model model) {
 		if (bindingResult.hasErrors())
@@ -97,6 +97,7 @@ public class AuthorController {
 	@GetMapping("/admin/editAuthors/{id}/addBooks")
 	public String showBookSelection(@PathVariable Long id, Model model) {
 		model.addAttribute("allBooks", this.bookService.findBooksNotInAuthor(id));
+		model.addAttribute("aId", id);
 		return "admin/selectBooks";
 	}
 
@@ -111,7 +112,7 @@ public class AuthorController {
 	public String updateAuthor(@PathVariable Long id, @ModelAttribute("currAuthor") Author updatedAuthor,
 			BindingResult result, Model model) {
 		if (result.hasErrors())
-			return "admin/editAllAuthors";
+			return "admin/editCurrAuthor";
 		Author existingAuthor = this.authorService.findById(id);
 		// aggiorna i campi
 		existingAuthor.setName(updatedAuthor.getName());
@@ -120,7 +121,7 @@ public class AuthorController {
 		existingAuthor.setDateOfBirth(updatedAuthor.getDateOfBirth());
 		existingAuthor.setDateOfDeath(updatedAuthor.getDateOfDeath());
 		this.authorService.save(existingAuthor);
-		return "redirect:/admin/editAuthors/" + id;
+		return "redirect:/admin/editAuthors";
 	}
 
 	@GetMapping("/authors/{id}/pictureId")

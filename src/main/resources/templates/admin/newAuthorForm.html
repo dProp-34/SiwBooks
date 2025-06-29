@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>SIW - Nuovo Autore</title>
-	<link rel="stylesheet" href="/css/stile.css" />
+	<link rel="stylesheet" th:href="@{/css/stile.css}" />
 </head>
 
 <body>
@@ -49,10 +49,7 @@
 				<label for="imageFile">Foto autore:</label>
 				<input type="file" id="imageFile" name="imageFile" accept="image/*" />
 			</div>
-
-			<div>
-				<button type="submit" class="btn">Conferma</button>
-			</div>
+			<br><button type="submit" class="btn">Conferma</button>
 		</form>
 
 	</div>
