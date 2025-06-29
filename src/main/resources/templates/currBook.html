@@ -27,12 +27,13 @@
 			<!-- Info Libro -->
 			<div>
 				<h2 th:text="${'Pubblicato nel: ' + currBook.releaseYear}">Pubblicato nel: 2000</h2>
-				<h2>Scritto da:</h2>
+				<h2>Scritto da</h2>
 				<div th:replace="fragments.html :: allAuthorsList(${currBook.authors})"></div>
 			</div>
 
 			<!-- Messaggio se il libro non esiste -->
-		</div>
+		</div><br>
+		<a href="/books" class="btn btn-secondary">Torna indietro</a>
 		<h2 th:unless="${currBook}">Il libro non è presente nel sistema.</h2>
 
 	</div>

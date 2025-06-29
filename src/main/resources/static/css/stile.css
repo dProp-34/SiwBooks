@@ -235,6 +235,91 @@ h2 {
 	line-height: 1.5;
 }
 
+.author-wrapper {
+	display: flex;
+	gap: 3rem;
+	max-width: 1100px;
+	background: var(--surface);
+	border-radius: var(--border-radius);
+	box-shadow: var(--shadow-lg);
+	padding: 2rem;
+	width: 100%;
+	animation: slideIn 0.6s ease-out;
+}
+
+.author-photo img {
+	width: 280px;
+	height: 400px;
+	object-fit: cover;
+	border-radius: var(--border-radius);
+	box-shadow: var(--shadow);
+	transition: transform 0.3s ease;
+}
+
+.author-photo img:hover {
+	transform: scale(1.05);
+}
+
+.author-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.author-info h1 {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+	color: var(--secondary-color);
+	text-align: left;
+	background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.author-details p {
+	font-size: 1.1rem;
+	margin: 0.3rem 0;
+	color: var(--text-primary);
+}
+
+.author-details strong {
+	color: var(--primary-color);
+}
+
+.author-books {
+	margin-top: 2.5rem;
+}
+
+.author-books h2 {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+	color: var(--secondary-color);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+	.author-wrapper {
+		flex-direction: column;
+		padding: 1.5rem;
+	}
+
+	.author-photo img {
+		width: 100%;
+		height: auto;
+		max-height: 400px;
+	}
+
+	.author-info h1 {
+		font-size: 2.5rem;
+		text-align: center;
+	}
+
+	.back-btn {
+		align-self: center;
+	}
+}
+
 /* Slider di immagini moderno */
 .slider-container {
 	margin-bottom: 1rem;

@@ -11,35 +11,19 @@
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
 	<div class="main-container">
+		<h1>Modifica Libro</h1>
 
 		<div th:if="${currBook!=null and #authorization.expression('hasAuthority(''ADMIN'')')}">
 
-			<!-- Info Libro -->
-			<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/update'}" method="post" th:object="${currBook}">
-				<div class="form-group">
-					<label for="title">Titolo:</label>
-					<input type="text" id="title" th:field="*{title}" required />
-					<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error"></span>
-				</div>
-
-				<div class="form-group">
-					<label for="releaseYear">Anno di pubblicazione:</label>
-					<input type="number" id="releaseYear" th:field="*{releaseYear}" min="1700" max="2100" required />
-					<span th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}" class="error"></span>
-				</div>
-
-				<button class="btn" type="submit">Salva modifiche</button>
-			</form>
-
 			<!-- Immagini libro -->
+			<h2>Immagini libro:</h2>
 			<div class="slider-container">
 				<div class="slider" id="imageSlider">
 					<div class="slides" th:each="img : ${currBook.images}">
 						<img class="slider-image" th:src="@{'/image/' + ${img.id}}" alt="Copertina libro" />
 
 						<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/image/' + ${img.id} + '/delete'}"
-							method="post">
-							<button class="btn-danger" type="submit">Cancella</button>
+							method="post"><button class="btn-danger" type="submit">Elimina</button>
 						</form>
 					</div>
 
@@ -54,6 +38,7 @@
 
 			<!-- Elenco autori -->
 			<div>
+				<br>
 				<h2>Scritto da:</h2>
 				<ul class="book-list">
 					<li th:each="a : ${currBook.authors}">
@@ -67,9 +52,9 @@
 									<span
 										th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}"></span>
 								</span>
-
+								<br>
 								<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/deleteAuthors/' + ${a.id}}"
-									method="post">
+									method="post" class="inline-form">
 									<button class="btn-danger" type="submit">Rimuovi</button>
 								</form>
 							</div>
@@ -77,10 +62,26 @@
 					</li>
 				</ul>
 
-				<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/addAuthors'}" method="post">
-					<button class="btn" type="submit">Aggiungi autore</button>
-				</form>
+				<a th:href="@{'/admin/editBooks/' + ${currBook.id} + '/addAuthors'}" class="btn">Aggiungi autore</a>
 			</div>
+
+			<!-- Info Libro -->
+			<br>
+			<form th:action="@{'/admin/editBooks/' + ${currBook.id} + '/update'}" method="post" th:object="${currBook}">
+				<div class="form-group">
+					<label for="title">Titolo:</label>
+					<input type="text" id="title" th:field="*{title}" required />
+					<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="releaseYear">Anno di pubblicazione:</label>
+					<input type="number" id="releaseYear" th:field="*{releaseYear}" min="1700" max="2100" required />
+					<span th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}" class="error"></span>
+				</div>
+
+				<br><button class="btn" type="submit">Salva modifiche</button>
+			</form>
 
 		</div>
 		<h2 th:unless="${currBook}">Il libro non è presente nel sistema.</h2>

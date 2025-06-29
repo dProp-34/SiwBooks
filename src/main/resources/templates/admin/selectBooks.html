@@ -18,7 +18,7 @@
 			<ul class="book-list">
 				<li th:each="book : ${allBooks}">
 					<div class="book-item">
-						<img class="book-cover" th:if="${book.images != null and !book.images.empty}"
+						<img class="book-cover" th:if="${book.images!=null and !book.images.empty}"
 							th:src="@{'/image/' + ${book.images[0].id}}" alt="Copertina libro" />
 						<div class="book-details">
 							<span class="book-title" th:text="${book.title}">Titolo</span>
@@ -35,7 +35,7 @@
 			</ul>
 		</div>
 
-		<div th:if="${allBooks == null or allBooks.isEmpty()}">
+		<div th:unless="${allBooks!=null and !allBooks.isEmpty()}">
 			<h2>Nessun libro disponibile per essere aggiunto a questo autore.</h2>
 		</div>
 

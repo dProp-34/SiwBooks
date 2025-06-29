@@ -9,8 +9,22 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class Credentials {
-
-	public static final String DEFAULT_ROLE = "DEFAULT";
+	/*
+	 * Al sistema possono accedere utenti occasionali, utenti registrati ed
+	 * amministratori:
+	 * Gli utenti occasionali possono consultare tutte le informazioni sui libri
+	 * (incluse le recensioni) e sugli autori, ma non possono apportare nessun tipo
+	 * di modifica ai dati
+	 * Gli utenti registrati, oltre a poter consultare le informazioni, possono
+	 * aggiungere recensioni ai libri (ogni utente registrato può aggiungere al più
+	 * una recensione, ogni libro può avere più recensioni, al più una per ogni
+	 * utente)
+	 * Gli amministratori possono aggiungere, modificare, cancellare libri e autori.
+	 * Gli amministratori possono anche cancellare le recensioni (ma non possono
+	 * modificarle)
+	 */
+	public static final String OCCASIONALE_ROLE = "UTENTE_OCCASIONALE";
+	public static final String REGISTRATO_ROLE = "UTENTE_REGISTRATO";
 	public static final String ADMIN_ROLE = "ADMIN";
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

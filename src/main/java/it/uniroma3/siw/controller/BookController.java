@@ -137,6 +137,7 @@ public class BookController {
 	@GetMapping("/admin/editBooks/{id}/addAuthors")
 	public String showAuthorSelection(@PathVariable Long id, Model model) {
 		model.addAttribute("allAuthors", this.authorService.findAuthorsNotInBook(id));
+		model.addAttribute("bId", id);
 		return "admin/selectAuthors";
 	}
 
@@ -151,7 +152,7 @@ public class BookController {
 	public String updateBook(@PathVariable Long id, @ModelAttribute("currBook") Book updatedBook,
 			BindingResult result, Model model) {
 		if (result.hasErrors())
-			return "admin/editAllBooks";
+			return "admin/editCurrBook";
 		Book existingBook = this.bookService.findById(id);
 		// aggiorna i campi
 		existingBook.setTitle(updatedBook.getTitle());

@@ -16,16 +16,17 @@
 		<div th:if="${currAuthor!=null and #authorization.expression('hasAuthority(''ADMIN'')')}">
 
 			<!-- Foto autore -->
+			<h2>Foto autore:</h2>
 			<div th:if="${currAuthor.picture != null}" style="display: flex; align-items: center; gap: 0.5rem;">
 				<img class="book-cover" th:src="@{'/image/' + ${currAuthor.picture.id}}" alt="Foto autore" />
 
 				<form
 					th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/image/' + ${currAuthor.picture.id} + '/delete'}"
-					method="post">
-					<button class="btn-danger" type="submit">Elimina foto</button>
+					method="post"><button class="btn-danger" type="submit">Elimina</button>
 				</form>
 			</div>
 			<div th:unless="${currAuthor.picture != null}">
+
 				<form th:action="@{'/admin/editAuthors/' + ${currAuthor.id} + '/image'}" method="post"
 					enctype="multipart/form-data">
 					<label for="imageFile">Carica foto:</label>
@@ -82,17 +83,21 @@
 
 				<div class="form-group">
 					<label for="dateOfBirth">Data di nascita:</label>
-					<input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" required />
+					<input type="date" id="dateOfBirth"
+						th:value="${currAuthor.dateOfBirth != null ? #temporals.format(currAuthor.dateOfBirth, 'yyyy-MM-dd') : ''}"
+						name="dateOfBirth" required />
 					<span th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="error"></span>
 				</div>
 
 				<div class="form-group">
 					<label for="dateOfDeath">Data di morte:</label>
-					<input type="date" id="dateOfDeath" th:field="*{dateOfDeath}" />
+					<input type="date" id="dateOfDeath"
+						th:value="${currAuthor.dateOfDeath != null ? #temporals.format(currAuthor.dateOfDeath, 'yyyy-MM-dd') : ''}"
+						name="dateOfDeath" />
 					<span th:if="${#fields.hasErrors('dateOfDeath')}" th:errors="*{dateOfDeath}" class="error"></span>
 				</div>
-				<br>
-				<button class="btn" type="submit">Salva modifiche</button>
+
+				<br><button class="btn" type="submit">Salva modifiche</button>
 			</form>
 
 		</div>

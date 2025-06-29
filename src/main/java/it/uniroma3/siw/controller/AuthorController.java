@@ -1,11 +1,17 @@
 package it.uniroma3.siw.controller;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +42,7 @@ public class AuthorController {
 		return "allAuthors";
 	}
 
-	/* Mostra il dettaglio di un singolo autore */
+	/* Mostra il dettaglio di un singolo autore @Transactional */
 	@GetMapping("/authors/{id}")
 	public String findById(@PathVariable Long id, Model model) {
 		model.addAttribute("currAuthor", this.authorService.findById(id));
@@ -76,6 +82,14 @@ public class AuthorController {
 	public String editAuthorById(@PathVariable Long id, Model model) {
 		model.addAttribute("currAuthor", this.authorService.findById(id));
 		return "admin/editCurrAuthor";
+	}
+
+	/* Metodo per gestire la conversione delle date */
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat.setLenient(false);
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 	}
 
 	/* Cancella un autore dal sistema */
@@ -124,8 +138,8 @@ public class AuthorController {
 		return "redirect:/admin/editAuthors";
 	}
 
-	@GetMapping("/authors/{id}/pictureId")
 	@ResponseBody
+	@GetMapping("/authors/{id}/pictureId")
 	public Long getAuthorPictureId(@PathVariable Long id) {
 		return authorService.findById(id).getPicture().getId();
 	}
