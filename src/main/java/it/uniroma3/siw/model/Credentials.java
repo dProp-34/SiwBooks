@@ -23,9 +23,8 @@ public class Credentials {
 	 * Gli amministratori possono anche cancellare le recensioni (ma non possono
 	 * modificarle)
 	 */
-	public static final String OCCASIONALE_ROLE = "UTENTE_OCCASIONALE";
-	public static final String REGISTRATO_ROLE = "UTENTE_REGISTRATO";
-	public static final String ADMIN_ROLE = "ADMIN";
+	public static final String DEFAULT_ROLE = "ROLE_USER";
+	public static final String ADMIN_ROLE = "ROLE_ADMIN";
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;

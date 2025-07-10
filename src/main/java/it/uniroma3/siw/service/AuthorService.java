@@ -41,8 +41,8 @@ public class AuthorService {
 		return authorRepository.findByDateOfBirth(year);
 	}
 
-	public boolean existsBySurnameAndDateOfBirth(String title, LocalDate year) {
-		return authorRepository.existsBySurnameAndDateOfBirth(title, year);
+	public Author findBySurnameAndDateOfBirth(String title, LocalDate year) {
+		return authorRepository.findBySurnameAndDateOfBirth(title, year);
 	}
 
 	public void addBookToAuthor(Long bookId, Long authorId) {

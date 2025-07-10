@@ -3,7 +3,6 @@
 
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
@@ -19,6 +18,7 @@
 						<a th:href="@{/authors}">Autori</a>
 					</nav>
 				</div>
+
 				<!-- Sezione destra: login/logout -->
 				<div class="user-section">
 					<div th:if="${userDetails}">
@@ -89,7 +89,7 @@
 						</span>
 						<!-- Solo per utenti ADMIN -->
 						<br>
-						<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+						<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 							<form style="all: unset;" th:action="@{'/admin/editAuthors/' + ${a.id}}" method="get">
 								<button type="submit">Modifica</button>
 							</form>
@@ -101,7 +101,7 @@
 					</div>
 				</a>
 			</li>
-			<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+			<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 				<a th:href="@{/admin/newAuthorForm}" class="btn">Crea nuovo autore</a>
 			</div>
 		</ul>
@@ -120,7 +120,7 @@
 							Nome Cognome, 2000</span>
 						<!-- Solo per utenti ADMIN -->
 						<br>
-						<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+						<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 							<form style="all: unset;" th:action="@{'/admin/editBooks/' + ${b.id}}" method="get">
 								<button type="submit">Modifica</button>
 							</form>
@@ -132,7 +132,7 @@
 					</div>
 				</a>
 			</li>
-			<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+			<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 				<a th:href="@{/admin/newBookForm}" class="btn">Crea nuovo libro</a>
 			</div>
 		</ul>

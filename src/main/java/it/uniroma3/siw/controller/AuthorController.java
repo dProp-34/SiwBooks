@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import it.uniroma3.siw.controller.validator.AuthorValidator;
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
@@ -29,11 +30,13 @@ import jakarta.validation.Valid;
 public class AuthorController {
 
 	@Autowired
-	AuthorService authorService;
+	private AuthorService authorService;
 	@Autowired
-	BookService bookService;
+	private AuthorValidator authorValidator;
 	@Autowired
-	ImageService imageService;
+	private BookService bookService;
+	@Autowired
+	private ImageService imageService;
 
 	/* Mostra la lista di tutti gli autori */
 	@GetMapping("/authors")
@@ -61,6 +64,7 @@ public class AuthorController {
 	@PostMapping("/admin/authors")
 	public String saveAuthor(@Valid @ModelAttribute("currAuthor") Author author, BindingResult bindingResult,
 			@RequestParam MultipartFile imageFile, Model model) {
+		authorValidator.validate(author, bindingResult);
 		if (bindingResult.hasErrors())
 			return "admin/newAuthorForm";
 		Author savedAuthor = this.authorService.save(author);
@@ -125,9 +129,12 @@ public class AuthorController {
 	@PostMapping("/admin/editAuthors/{id}/update")
 	public String updateAuthor(@PathVariable Long id, @ModelAttribute("currAuthor") Author updatedAuthor,
 			BindingResult result, Model model) {
+		updatedAuthor.setId(id); // molto importante: necessario per validare correttamente
+		authorValidator.validate(updatedAuthor, result);
 		if (result.hasErrors())
 			return "admin/editCurrAuthor";
 		Author existingAuthor = this.authorService.findById(id);
+
 		// aggiorna i campi
 		existingAuthor.setName(updatedAuthor.getName());
 		existingAuthor.setSurname(updatedAuthor.getSurname());

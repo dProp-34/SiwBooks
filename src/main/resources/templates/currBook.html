@@ -6,6 +6,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title th:text="'SIW - ' + ${currBook.title}">SIW - Libro</title>
 	<link rel="stylesheet" th:href="@{/css/stile.css}" />
+	<!-- Favicon -->
+	<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+	<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="/images/android-chrome-192x192.png">
+	<link rel="icon" type="image/png" sizes="512x512" href="/images/android-chrome-512x512.png">
+	<meta name="theme-color" content="#00ad90">
 </head>
 
 <body>
@@ -29,6 +37,32 @@
 				<h2 th:text="${'Pubblicato nel: ' + currBook.releaseYear}">Pubblicato nel: 2000</h2>
 				<h2>Scritto da</h2>
 				<div th:replace="fragments.html :: allAuthorsList(${currBook.authors})"></div>
+			</div>
+
+			<!-- Sezione recensioni -->
+			<h2>Recensioni</h2>
+			<div th:if="${#lists.isEmpty(currBook.reviews())}">
+				<p>Non ci sono ancora recensioni per questo libro.</p>
+			</div>
+			<div th:if="${#authorization.expression('hasRole(''USER'')')}">
+				<a th:href="@{'/books/' + ${currBook.id} + '/addReview'}" class="btn btn-primary">Scrivi una
+					recensione</a>
+			</div>
+			<div th:unless="${#authorization.expression('hasRole(''USER'')')}">
+				<p>Accedi per scrivere una recensione.</p>
+			</div>
+			<div th:each="review : ${currBook.reviews}">
+				<div class="book-item">
+					<h3 th:text="${review.title}">Titolo recensione</h3>
+					<p><strong>Voto:</strong> <span th:text="${review.vote}">5</span></p>
+					<p th:text="${review.content}">Contenuto recensione</p>
+
+					<!-- Pulsante per admin: elimina recensione -->
+					<form th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+						th:action="@{'/admin/reviews/' + ${review.id} + '/delete'}" method="post">
+						<button type="submit" class="btn-danger">Elimina recensione</button>
+					</form>
+				</div>
 			</div>
 
 			<!-- Messaggio se il libro non esiste -->

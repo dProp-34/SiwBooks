@@ -22,7 +22,8 @@
 
 		<h1>Inserisci Nuovo Libro</h1>
 
-		<form th:action="@{/admin/books}" method="POST" th:object="${currBook}" enctype="multipart/form-data">
+		<form th:if="${#authorization.expression('hasRole(''USER'')')}" th:action="@{/admin/books}" method="POST"
+			th:object="${currBook}" enctype="multipart/form-data">
 			<div class="form-group">
 				<label for="title">Titolo:</label>
 				<input type="text" id="title" th:field="*{title}" />

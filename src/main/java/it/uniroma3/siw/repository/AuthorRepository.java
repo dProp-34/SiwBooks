@@ -10,7 +10,7 @@ public interface AuthorRepository extends CrudRepository<Author, Long> {
 
 	public Iterable<Author> findByDateOfBirth(LocalDate year);
 
-	public boolean existsBySurnameAndDateOfBirth(String title, LocalDate year);
+	public Author findBySurnameAndDateOfBirth(String title, LocalDate year);
 
 	@Query("SELECT a FROM Author a WHERE a NOT IN " +
 			"(SELECT a2 FROM Book b JOIN b.authors a2 WHERE b.id = :bookId)")

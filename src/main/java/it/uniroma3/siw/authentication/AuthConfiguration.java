@@ -1,7 +1,5 @@
 package it.uniroma3.siw.authentication;
 
-import static it.uniroma3.siw.model.Credentials.ADMIN_ROLE;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +57,13 @@ public class AuthConfiguration {
 				.requestMatchers("/images/**", "/css/**", "/js/**").permitAll()
 				// Allow public access to author images endpoint
 				.requestMatchers(HttpMethod.GET, "/authors/*/image").permitAll()
-				// Restrict admin/editing functions to authenticated users with ADMIN role
-				.requestMatchers("/admin/**").hasAuthority(ADMIN_ROLE)
-				// IMPORTANT: Change this to permitAll() instead of authenticated()
+				// Accesso alle recensioni per utenti registrati
+				.requestMatchers("/books/*/addReview").hasAuthority("ROLE_USER")
+				.requestMatchers(HttpMethod.POST, "/books/*/addReview").hasAuthority("ROLE_USER")
+				// Accesso riservato agli amministratori
+				.requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+				.requestMatchers(HttpMethod.POST, "/admin/reviews/**/delete").hasAuthority("ROLE_ADMIN")
+				// Tutto il resto è permesso
 				.anyRequest().permitAll())
 				.formLogin(login -> login
 						.loginPage("/login")

@@ -16,9 +16,11 @@ public class BookValidator implements Validator {
 	@Override
 	public void validate(Object o, Errors errors) {
 		Book book = (Book) o;
-		if (bookService.existsByTitleAndReleaseYear(book.getTitle(), book.getReleaseYear())) {
+		// Cerca un libro con stesso titolo e anno
+		Book existing = bookService.findByTitleAndReleaseYear(book.getTitle(), book.getReleaseYear());
+		// Se ne esiste uno, ed è diverso da quello che stiamo validando (per update)
+		if (existing != null && (book.getId() == null || !existing.getId().equals(book.getId())))
 			errors.reject("book.duplicate");
-		}
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +29,8 @@ public class Book {
 	@ManyToMany // The mappedBy attribute is only required on the inverse side
 	@JoinTable(name = "book_authors")
 	private Set<Author> authors = new HashSet<>();
+	@OneToMany(mappedBy = "reviewedBook", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Review> reviews;
 	@OneToMany
 	private List<Image> images = new ArrayList<>();
 
@@ -102,6 +105,14 @@ public class Book {
 	@Override
 	public String toString() {
 		return "Book [title=" + title + ", releaseYear=" + releaseYear + "]";
+	}
+
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
 	}
 
 }

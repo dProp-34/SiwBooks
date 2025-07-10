@@ -40,8 +40,8 @@ public class BookService {
 		return bookRepository.findByReleaseYear(year);
 	}
 
-	public boolean existsByTitleAndReleaseYear(String title, int year) {
-		return bookRepository.existsByTitleAndReleaseYear(title, year);
+	public Book findByTitleAndReleaseYear(String title, int year) {
+		return bookRepository.findByTitleAndReleaseYear(title, year);
 	}
 
 	public void addAuthorToBook(Long authorId, Long bookId) {

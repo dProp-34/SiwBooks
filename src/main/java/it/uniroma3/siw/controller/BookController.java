@@ -2,7 +2,6 @@ package it.uniroma3.siw.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import it.uniroma3.siw.controller.validator.BookValidator;
 import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.model.Image;
 import it.uniroma3.siw.service.AuthorService;
@@ -32,11 +32,13 @@ import jakarta.validation.Valid;
 public class BookController {
 
 	@Autowired
-	BookService bookService;
+	private BookService bookService;
 	@Autowired
-	AuthorService authorService;
+	private BookValidator bookValidator;
 	@Autowired
-	ImageService imageService;
+	private AuthorService authorService;
+	@Autowired
+	private ImageService imageService;
 
 	/*
 	 * Se l'utente clicca su 'Mostra Libri', viene mostrata la lista di tutti i
@@ -82,6 +84,7 @@ public class BookController {
 	@PostMapping("/admin/books")
 	public String saveBook(@Valid @ModelAttribute("currBook") Book book, BindingResult bindingResult,
 			@RequestParam MultipartFile[] imageFiles, Model model) {
+		bookValidator.validate(book, bindingResult);
 		if (bindingResult.hasErrors())
 			return "admin/newBookForm";
 		Book savedBook = this.bookService.save(book);
@@ -151,9 +154,12 @@ public class BookController {
 	@PostMapping("/admin/editBooks/{id}/update")
 	public String updateBook(@PathVariable Long id, @ModelAttribute("currBook") Book updatedBook,
 			BindingResult result, Model model) {
+		updatedBook.setId(id); // molto importante: necessario per validare correttamente
+		bookValidator.validate(updatedBook, result);
 		if (result.hasErrors())
 			return "admin/editCurrBook";
 		Book existingBook = this.bookService.findById(id);
+
 		// aggiorna i campi
 		existingBook.setTitle(updatedBook.getTitle());
 		existingBook.setReleaseYear(updatedBook.getReleaseYear());

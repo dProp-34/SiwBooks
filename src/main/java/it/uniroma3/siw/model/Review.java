@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +14,7 @@ import jakarta.validation.constraints.NotNull;
 public class Review {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long reviewId;
+	private Long id;
 	@NotBlank
 	private String title;
 	@NotNull
@@ -21,13 +22,17 @@ public class Review {
 	@Max(5)
 	private Integer vote;
 	private String text;
+	@ManyToOne
+	private Book reviewedBook;
+	@ManyToOne
+	private User reviewer;
 
-	public Long getReviewId() {
-		return reviewId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setReviewId(Long id) {
-		this.reviewId = id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -42,24 +47,40 @@ public class Review {
 		return vote;
 	}
 
-	public void setVote(Integer year) {
-		this.vote = year;
+	public void setVote(Integer vote) {
+		this.vote = vote;
 	}
 
 	public String getText() {
 		return text;
 	}
 
-	public void setText(String url) {
-		this.text = url;
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public Book getReviewedBook() {
+		return reviewedBook;
+	}
+
+	public void setReviewedBook(Book reviewedBook) {
+		this.reviewedBook = reviewedBook;
+	}
+
+	public User getReviewer() {
+		return reviewer;
+	}
+
+	public void setReviewer(User reviewer) {
+		this.reviewer = reviewer;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + ((vote == null) ? 0 : vote.hashCode());
+		result = prime * result + ((reviewedBook == null) ? 0 : reviewedBook.hashCode());
+		result = prime * result + ((reviewer == null) ? 0 : reviewer.hashCode());
 		return result;
 	}
 
@@ -72,22 +93,17 @@ public class Review {
 		if (getClass() != obj.getClass())
 			return false;
 		Review other = (Review) obj;
-		if (title == null) {
-			if (other.title != null)
+		if (reviewedBook == null) {
+			if (other.reviewedBook != null)
 				return false;
-		} else if (!title.equals(other.title))
+		} else if (!reviewedBook.equals(other.reviewedBook))
 			return false;
-		if (vote == null) {
-			if (other.vote != null)
+		if (reviewer == null) {
+			if (other.reviewer != null)
 				return false;
-		} else if (!vote.equals(other.vote))
+		} else if (!reviewer.equals(other.reviewer))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "Review [reviewId=" + reviewId + ", title=" + title + ", vote=" + vote + "]";
 	}
 
 }
