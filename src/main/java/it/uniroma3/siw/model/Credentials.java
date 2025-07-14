@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 
 @Entity
 public class Credentials {
@@ -30,12 +31,18 @@ public class Credentials {
 	private Long id;
 	private String username;
 	private String password;
+	@Transient // Non verrà salvato nel DB
+	private String confirmPassword;
 	private String role;
 	@OneToOne(cascade = CascadeType.ALL)
 	private User user;
 
-	public String getUsername() {
-		return username;
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
 	}
 
 	public Long getId() {
@@ -52,6 +59,10 @@ public class Credentials {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getUsername() {
+		return username;
 	}
 
 	public void setUsername(String username) {

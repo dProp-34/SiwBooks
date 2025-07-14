@@ -7,6 +7,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import it.uniroma3.siw.controller.validator.CredentialsValidator;
 import it.uniroma3.siw.model.Credentials;
 import it.uniroma3.siw.model.User;
 import it.uniroma3.siw.service.CredentialsService;
@@ -18,6 +20,8 @@ public class AuthenticationController {
 
 	@Autowired
 	private CredentialsService credentialsService;
+	@Autowired
+	private CredentialsValidator credentialsValidator;
 	@Autowired
 	private UserService userService;
 
@@ -41,6 +45,7 @@ public class AuthenticationController {
 	@PostMapping("/register")
 	public String registerUser(@Valid @ModelAttribute User user, BindingResult userBindingResult,
 			@Valid @ModelAttribute Credentials credentials, BindingResult credentialsBindingResult, Model model) {
+		credentialsValidator.validate(credentials, credentialsBindingResult);
 		if (!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
 			userService.saveUser(user);
 			credentials.setUser(user);

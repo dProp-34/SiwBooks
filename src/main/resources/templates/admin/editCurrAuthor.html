@@ -79,7 +79,7 @@
 
 				<div class="form-group">
 					<label for="surname">Cognome:</label>
-					<input type="text" id="surname" th:field="*{surname}" required />
+					<input type="text" id="surname" th:field="*{surname}" />
 					<span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" class="error"></span>
 				</div>
 

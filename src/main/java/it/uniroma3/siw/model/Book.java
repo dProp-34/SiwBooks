@@ -26,13 +26,13 @@ public class Book {
 	@Min(1700)
 	@Max(2100)
 	private int releaseYear;
+	@OneToMany
+	private List<Image> images = new ArrayList<>();
 	@ManyToMany // The mappedBy attribute is only required on the inverse side
 	@JoinTable(name = "book_authors")
 	private Set<Author> authors = new HashSet<>();
 	@OneToMany(mappedBy = "reviewedBook", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Review> reviews;
-	@OneToMany
-	private List<Image> images = new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -74,6 +74,24 @@ public class Book {
 		this.images = imageUrls;
 	}
 
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+
+	public void addReview(Review review) {
+		this.reviews.add(review);
+		review.setReviewedBook(this);
+	}
+
+	public void removeReview(Review review) {
+		this.reviews.remove(review);
+		review.setReviewedBook(null);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -105,14 +123,6 @@ public class Book {
 	@Override
 	public String toString() {
 		return "Book [title=" + title + ", releaseYear=" + releaseYear + "]";
-	}
-
-	public List<Review> getReviews() {
-		return reviews;
-	}
-
-	public void setReviews(List<Review> reviews) {
-		this.reviews = reviews;
 	}
 
 }

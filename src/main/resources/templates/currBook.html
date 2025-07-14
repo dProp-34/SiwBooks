@@ -35,41 +35,59 @@
 			<!-- Info Libro -->
 			<div>
 				<h2 th:text="${'Pubblicato nel: ' + currBook.releaseYear}">Pubblicato nel: 2000</h2>
-				<h2>Scritto da</h2>
+				<h1>Scritto da</h1>
 				<div th:replace="fragments.html :: allAuthorsList(${currBook.authors})"></div>
 			</div>
 
 			<!-- Sezione recensioni -->
-			<h2>Recensioni</h2>
-			<div th:if="${#lists.isEmpty(currBook.reviews())}">
-				<p>Non ci sono ancora recensioni per questo libro.</p>
-			</div>
-			<div th:if="${#authorization.expression('hasRole(''USER'')')}">
-				<a th:href="@{'/books/' + ${currBook.id} + '/addReview'}" class="btn btn-primary">Scrivi una
-					recensione</a>
-			</div>
-			<div th:unless="${#authorization.expression('hasRole(''USER'')')}">
-				<p>Accedi per scrivere una recensione.</p>
-			</div>
-			<div th:each="review : ${currBook.reviews}">
-				<div class="book-item">
-					<h3 th:text="${review.title}">Titolo recensione</h3>
-					<p><strong>Voto:</strong> <span th:text="${review.vote}">5</span></p>
-					<p th:text="${review.content}">Contenuto recensione</p>
-
-					<!-- Pulsante per admin: elimina recensione -->
-					<form th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
-						th:action="@{'/admin/reviews/' + ${review.id} + '/delete'}" method="post">
-						<button type="submit" class="btn-danger">Elimina recensione</button>
-					</form>
+			<div>
+				<h1>Recensioni</h1>
+				<div th:if="${#lists.isEmpty(currBook.reviews)}">
+					<h2>Non sono ancora presenti recensioni per questo libro.</h2>
+				</div>
+				<div th:unless="${#authorization.expression('hasRole(''USER'')')}">
+					<h2>Accedi per scrivere una recensione.</h2>
+				</div>
+				<div th:if="${param.alreadyReviewed}">
+					<h2 style="	color: #e74c3c;">
+						Hai già scritto una recensione per questo libro.</h2>
+				</div>
+				<ul class="book-list">
+					<li th:each="r : ${currBook.reviews}">
+						<a class="book-item"> <!--th:href="@{'/reviews/' + ${r.id}}"-->
+							<div class="book-details">
+								<span class="book-title" th:text="${r.title}">Titolo</span>
+								<span class="book-meta">
+									<span>Voto: <strong th:text="${r.vote + '/5'}"></strong></span>
+									<p th:text="${r.text}">Contenuto recensione</p>
+								</span>
+								<br>
+								<!-- Solo per utenti oppure ADMIN -->
+								<form th:if="${currUser!=null && r.reviewer.equals(currUser)}" style="all: unset;"
+									th:action="@{'/books/' + ${currBook.id} + '/reviews/' + ${r.id} + '/edit'}"
+									method="get">
+									<button class="btn" type="submit">Modifica</button>
+								</form>
+								<form th:if="${#authorization.expression('hasRole(''ADMIN'')')}" style="all: unset;"
+									th:action="@{'/admin/books/' + ${currBook.id} + '/reviews/' + ${r.id} + '/delete'}"
+									method="post">
+									<button class="btn-danger" type="submit">Cancella</button>
+								</form>
+							</div>
+						</a>
+					</li>
+				</ul>
+				<div th:if="${#authorization.expression('hasRole(''USER'')')}">
+					<a th:href="@{'/books/' + ${currBook.id} + '/newReviewForm'}" class="btn">
+						Scrivi una recensione</a>
 				</div>
 			</div>
-
+			<br>
 			<!-- Messaggio se il libro non esiste -->
-		</div><br>
-		<a href="/books" class="btn btn-secondary">Torna indietro</a>
+		</div>
+		<br>
 		<h2 th:unless="${currBook}">Il libro non è presente nel sistema.</h2>
-
+		<a href="/books" class="btn btn-secondary">Torna indietro</a>
 	</div>
 </body>
 

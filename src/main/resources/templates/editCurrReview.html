@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SIW - Modifica Recensione</title>
+	<link rel="stylesheet" th:href="@{/css/stile.css}" />
+	<!-- Favicon -->
+	<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+	<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="/images/android-chrome-192x192.png">
+	<link rel="icon" type="image/png" sizes="512x512" href="/images/android-chrome-512x512.png">
+	<meta name="theme-color" content="#00ad90">
+</head>
+
+<body>
+	<div th:replace="~{fragments.html :: siteHeader}"></div>
+
+	<div class="main-container">
+		<h1>Modifica Recensione</h1>
+
+		<div th:if="${currReview != null and #authorization.expression('hasRole(''USER'')')}">
+
+			<form th:action="@{'/books/' + ${currReview.reviewedBook.id} + '/reviews/' + ${currReview.id} + '/edit'}"
+				th:object="${currReview}" method="post">
+
+				<div class="form-group">
+					<label for="title">Titolo:</label>
+					<input type="text" id="title" th:field="*{title}" />
+					<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="vote">Voto (1-5):</label>
+					<input type="number" id="vote" th:field="*{vote}" min="1" max="5" required />
+					<span th:if="${#fields.hasErrors('vote')}" th:errors="*{vote}" class="error"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="text">Testo:</label>
+					<textarea id="text" th:field="*{text}" rows="5" maxlength="300"></textarea>
+					<span th:if="${#fields.hasErrors('text')}" th:errors="*{text}" class="error"></span>
+				</div>
+				<br>
+				<button class="btn" type="submit">Salva modifiche</button>
+				<a th:href="@{'/books/' + ${currReview.reviewedBook.id}}" class="btn btn-secondary">Annulla</a>
+			</form>
+		</div>
+
+		<h2 th:unless="${currReview}">La recensione non è presente nel sistema.</h2>
+		<h2 th:unless="${#authorization.expression('hasRole(''USER'')')}">
+			Solo l'utente che ha scritto questa recensione può modificarla.
+		</h2>
+	</div>
+</body>
+
+</html>

@@ -36,8 +36,8 @@
 				</p>
 			</div>
 		</div>
-
-		<br> <!-- Contenuto admin-only -->
+		<br>
+		<!-- Contenuto admin-only -->
 		<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="admin-section">
 			<h2>Gestione Amministratore</h2>
 			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">

@@ -47,15 +47,14 @@
             </div>
 
             <div class="author-books">
-                <h2>Libri pubblicati</h2>
+                <h2 style="padding-bottom: 1.5rem;">Libri pubblicati</h2>
                 <div th:replace="fragments.html :: allBooksList(${currAuthor.books})"></div>
             </div>
-
-            <!-- Messaggio se il libro non esiste -->
-        </div><br>
-        <a href="/authors" class="btn btn-secondary">Torna indietro</a>
+        </div>
+        <br>
+        <!-- Messaggio se il libro non esiste -->
         <h2 th:unless="${currAuthor}">L'autore non è presente nel sistema.</h2>
-
+        <a href="/authors" class="btn btn-secondary">Torna indietro</a>
     </div>
 </body>
 

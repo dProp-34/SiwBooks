@@ -56,6 +56,13 @@
 					<input type="password" id="password" th:field="*{password}" required />
 					<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></span>
 				</div>
+				<br>
+				<div class="form-group">
+					<label for="confirmPassword">Conferma Password:</label>
+					<input type="password" id="confirmPassword" th:field="*{confirmPassword}" required />
+					<span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"
+						class="error"></span>
+				</div>
 			</div>
 			<br><button class="btn" type="submit">Registrati</button>
 		</form>

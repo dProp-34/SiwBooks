@@ -42,15 +42,10 @@
 				</li>
 			</ul>
 		</div>
-
-		<div th:unless="${allBooks!=null and !allBooks.isEmpty()}">
-			<h2>Nessun libro disponibile per essere aggiunto a questo autore.</h2>
-		</div>
-
-		<div style="margin-top: 2rem;">
-			<a th:href="@{'/admin/editAuthors/' + ${aId}}" class="btn btn-secondary">Torna indietro</a>
-		</div>
-
+		<br>
+		<h2 th:unless="${allBooks!=null and !allBooks.isEmpty()}">
+			Nessun libro disponibile per essere aggiunto a questo autore.</h2>
+		<a th:href="@{'/admin/editAuthors/' + ${aId}}" class="btn btn-secondary">Torna indietro</a>
 	</div>
 </body>
 

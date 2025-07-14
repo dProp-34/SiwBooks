@@ -87,15 +87,15 @@
 							<span th:text="${'Data di nascita: '+ #temporals.format(a.dateOfBirth, 'dd/MM/yyyy')}">
 								Data di nascita:</span>
 						</span>
-						<!-- Solo per utenti ADMIN -->
 						<br>
+						<!-- Solo per utenti ADMIN -->
 						<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 							<form style="all: unset;" th:action="@{'/admin/editAuthors/' + ${a.id}}" method="get">
-								<button type="submit">Modifica</button>
+								<button class="btn" type="submit">Modifica</button>
 							</form>
 							<form style="all: unset;" th:action="@{'/admin/editAuthors/' + ${a.id} + '/delete'}"
 								method="post">
-								<button type="submit" class="btn-danger">Cancella</button>
+								<button class="btn-danger" type="submit">Cancella</button>
 							</form>
 						</div>
 					</div>
@@ -122,7 +122,7 @@
 						<br>
 						<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 							<form style="all: unset;" th:action="@{'/admin/editBooks/' + ${b.id}}" method="get">
-								<button type="submit">Modifica</button>
+								<button class="btn" type="submit">Modifica</button>
 							</form>
 							<form style="all: unset;" th:action="@{'/admin/editBooks/' + ${b.id} + '/delete'}"
 								method="post">

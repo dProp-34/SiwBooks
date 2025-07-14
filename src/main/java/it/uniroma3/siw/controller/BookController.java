@@ -2,7 +2,10 @@ package it.uniroma3.siw.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -17,9 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import it.uniroma3.siw.controller.validator.BookValidator;
 import it.uniroma3.siw.model.Book;
+import it.uniroma3.siw.model.Credentials;
 import it.uniroma3.siw.model.Image;
+import it.uniroma3.siw.model.User;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
+import it.uniroma3.siw.service.CredentialsService;
 import it.uniroma3.siw.service.ImageService;
 import jakarta.validation.Valid;
 
@@ -39,6 +45,8 @@ public class BookController {
 	private AuthorService authorService;
 	@Autowired
 	private ImageService imageService;
+	@Autowired
+	private CredentialsService credentialsService;
 
 	/*
 	 * Se l'utente clicca su 'Mostra Libri', viene mostrata la lista di tutti i
@@ -62,6 +70,11 @@ public class BookController {
 		 */
 		Book book = this.bookService.findById(id);
 		book.getImages().size(); // forza l'inizializzazione
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Credentials currCredentials = credentialsService.getCredentials(auth.getName());
+		User currUser = currCredentials != null ? currCredentials.getUser() : null;
+
+		model.addAttribute("currUser", currUser);
 		model.addAttribute("currBook", book);
 		return "currBook";
 	}

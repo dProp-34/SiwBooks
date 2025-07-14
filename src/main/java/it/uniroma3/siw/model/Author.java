@@ -20,18 +20,17 @@ public class Author {
 	private Long id;
 	@NotBlank
 	private String name;
-	@NotBlank
 	private String surname;
 	@NotNull
 	@PastOrPresent
 	private LocalDate dateOfBirth;
 	@PastOrPresent
 	private LocalDate dateOfDeath;
-	@ManyToMany(mappedBy = "authors") // Reverse side of the relationship
-	private Set<Book> books = new HashSet<>();
+	private String nationality;
 	@OneToOne
 	private Image picture;
-	private String nationality;
+	@ManyToMany(mappedBy = "authors") // Reverse side of the relationship
+	private Set<Book> books = new HashSet<>();
 
 	public Long getId() {
 		return id;
