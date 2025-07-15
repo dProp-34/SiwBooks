@@ -1,9 +1,9 @@
 package it.uniroma3.siw.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Book {
@@ -23,16 +24,17 @@ public class Book {
 	private Long id;
 	@NotBlank
 	private String title;
+	@NotNull
 	@Min(1700)
 	@Max(2100)
-	private int releaseYear;
-	@OneToMany
-	private List<Image> images = new ArrayList<>();
+	private Integer releaseYear;
 	@ManyToMany // The mappedBy attribute is only required on the inverse side
 	@JoinTable(name = "book_authors")
 	private Set<Author> authors = new HashSet<>();
-	@OneToMany(mappedBy = "reviewedBook", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "reviewedBook", orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<Review> reviews;
+	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+	private List<Image> images;
 
 	public Long getId() {
 		return id;
@@ -50,11 +52,11 @@ public class Book {
 		this.title = title;
 	}
 
-	public int getReleaseYear() {
+	public Integer getReleaseYear() {
 		return releaseYear;
 	}
 
-	public void setReleaseYear(int releaseYear) {
+	public void setReleaseYear(Integer releaseYear) {
 		this.releaseYear = releaseYear;
 	}
 
@@ -66,14 +68,6 @@ public class Book {
 		this.authors = authors;
 	}
 
-	public List<Image> getImages() {
-		return images;
-	}
-
-	public void setImages(List<Image> imageUrls) {
-		this.images = imageUrls;
-	}
-
 	public List<Review> getReviews() {
 		return reviews;
 	}
@@ -82,14 +76,12 @@ public class Book {
 		this.reviews = reviews;
 	}
 
-	public void addReview(Review review) {
-		this.reviews.add(review);
-		review.setReviewedBook(this);
+	public List<Image> getImages() {
+		return images;
 	}
 
-	public void removeReview(Review review) {
-		this.reviews.remove(review);
-		review.setReviewedBook(null);
+	public void setImages(List<Image> images) {
+		this.images = images;
 	}
 
 	@Override
@@ -97,7 +89,7 @@ public class Book {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + releaseYear;
+		result = prime * result + ((releaseYear == null) ? 0 : releaseYear.hashCode());
 		return result;
 	}
 
@@ -115,14 +107,22 @@ public class Book {
 				return false;
 		} else if (!title.equals(other.title))
 			return false;
-		if (releaseYear != other.releaseYear)
+		if (releaseYear == null) {
+			if (other.releaseYear != null)
+				return false;
+		} else if (!releaseYear.equals(other.releaseYear))
 			return false;
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "Book [title=" + title + ", releaseYear=" + releaseYear + "]";
+	public void addReview(Review review) {
+		this.reviews.add(review);
+		review.setReviewedBook(this);
+	}
+
+	public void removeReview(Review review) {
+		this.reviews.remove(review);
+		review.setReviewedBook(null);
 	}
 
 }

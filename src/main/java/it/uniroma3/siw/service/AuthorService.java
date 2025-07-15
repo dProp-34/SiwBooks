@@ -1,9 +1,11 @@
 package it.uniroma3.siw.service;
 
 import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.repository.AuthorRepository;
@@ -30,7 +32,12 @@ public class AuthorService {
 	}
 
 	public void deleteAuthorById(Long id) {
-		authorRepository.deleteById(id);
+		Author author = authorRepository.findById(id).orElseThrow();
+		for (Book b : author.getBooks()) {
+			b.getAuthors().remove(author);
+		}
+		author.getBooks().clear();
+		authorRepository.delete(author);
 	}
 
 	public Iterable<Author> findAuthorsNotInBook(@Param("bookId") Long bookId) {

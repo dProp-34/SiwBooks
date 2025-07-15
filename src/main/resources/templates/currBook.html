@@ -59,6 +59,8 @@
 								<span class="book-title" th:text="${r.title}">Titolo</span>
 								<span class="book-meta">
 									<span>Voto: <strong th:text="${r.vote + '/5'}"></strong></span>
+									<span style="margin-left: 1rem;">Scritto da: <strong
+											th:text="${r.reviewer.name + ' ' + r.reviewer.surname}"></strong></span>
 									<p th:text="${r.text}">Contenuto recensione</p>
 								</span>
 								<br>

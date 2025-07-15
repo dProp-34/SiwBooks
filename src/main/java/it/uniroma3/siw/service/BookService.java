@@ -3,6 +3,7 @@ package it.uniroma3.siw.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.repository.AuthorRepository;
@@ -29,7 +30,14 @@ public class BookService {
 	}
 
 	public void deleteBookById(Long id) {
-		bookRepository.deleteById(id);
+		Book book = bookRepository.findById(id).orElseThrow();
+
+		// Rimuovi i collegamenti con gli autori (non cancella gli autori)
+		for (Author a : book.getAuthors()) {
+			a.getBooks().remove(book);
+		}
+		book.getAuthors().clear();
+		bookRepository.delete(book);
 	}
 
 	public Iterable<Book> findBooksNotInAuthor(@Param("authorId") Long authorId) {
