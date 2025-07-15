@@ -1,4 +1,4 @@
-<img width="200" height="100" alt="logo-siw" src="https://github.com/user-attachments/assets/7d97668a-5fd3-4f8b-bd91-1fad0add6b9a"/>
+<img width="200" height="100" alt="logo-siw" src="https://github.com/user-attachments/assets/26615bc8-5a2a-4936-a4ea-94d653532ee6"/>
 
 Sistema Web basato su Springboot per la gestione di una libreria
 
