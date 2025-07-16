@@ -100,7 +100,7 @@
 						</div>
 					</div>
 				</a>
-			</li>
+			</li><br>
 			<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 				<a th:href="@{/admin/newAuthorForm}" class="btn">Crea nuovo autore</a>
 			</div>
@@ -131,7 +131,7 @@
 						</div>
 					</div>
 				</a>
-			</li>
+			</li><br>
 			<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 				<a th:href="@{/admin/newBookForm}" class="btn">Crea nuovo libro</a>
 			</div>

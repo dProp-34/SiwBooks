@@ -19,17 +19,17 @@
 <body>
 	<div th:replace="~{fragments.html :: siteHeader}"></div>
 
+	<h1>Modifica Recensione</h1>
 	<div class="main-container">
-		<h1>Modifica Recensione</h1>
-
 		<div th:if="${currReview != null and #authorization.expression('hasRole(''USER'')')}">
 
-			<form th:action="@{'/books/' + ${currReview.reviewedBook.id} + '/reviews/' + ${currReview.id} + '/edit'}"
+			<form th:if="${#authorization.expression('hasRole(''USER'')')}"
+				th:action="@{'/books/' + ${currReview.reviewedBook.id} + '/reviews/' + ${currReview.id} + '/edit'}"
 				th:object="${currReview}" method="post">
 
 				<div class="form-group">
 					<label for="title">Titolo:</label>
-					<input type="text" id="title" th:field="*{title}" />
+					<input type="text" id="title" th:field="*{title}" required />
 					<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error"></span>
 				</div>
 
@@ -46,9 +46,32 @@
 				</div>
 				<br>
 				<button class="btn" type="submit">Salva modifiche</button>
-				<a th:href="@{'/books/' + ${currReview.reviewedBook.id}}" class="btn btn-secondary">Annulla</a>
+				<!-- a th:href="@{'/books/' + ${currReview.reviewedBook.id}}" class="btn btn-secondary">Annulla</a -->
 			</form>
 		</div>
+
+		<script>
+			// Contatore caratteri (opzionale)
+			document.addEventListener("DOMContentLoaded", () => {
+				const textarea = document.getElementById("text");
+				const counter = document.createElement("div");
+				counter.style.fontSize = "1rem";
+				counter.style.color = "#e74c3c";
+				textarea.parentNode.insertBefore(counter, textarea.nextSibling);
+
+				const updateCounter = () => {
+					const remaining = 300 - textarea.value.length;
+					if (remaining < 100) {
+						counter.style.display = "block";
+						counter.textContent = `${remaining} caratteri rimanenti`;
+					} else {
+						counter.style.display = "none";
+					}
+				};
+				textarea.addEventListener("input", updateCounter);
+				updateCounter();
+			});
+		</script>
 
 		<h2 th:unless="${currReview}">La recensione non è presente nel sistema.</h2>
 		<h2 th:unless="${#authorization.expression('hasRole(''USER'')')}">

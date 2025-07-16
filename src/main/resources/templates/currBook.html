@@ -55,7 +55,8 @@
 				<ul class="book-list">
 					<li th:each="r : ${currBook.reviews}">
 						<a class="book-item"> <!--th:href="@{'/reviews/' + ${r.id}}"-->
-							<div class="book-details">
+							<div class="book-details"
+								style="max-width: 100%; overflow-wrap: break-word; word-break: break-word; white-space: normal;">
 								<span class="book-title" th:text="${r.title}">Titolo</span>
 								<span class="book-meta">
 									<span>Voto: <strong th:text="${r.vote + '/5'}"></strong></span>

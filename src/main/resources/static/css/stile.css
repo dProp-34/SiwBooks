@@ -618,6 +618,7 @@ a:hover {
 
 	.main-container {
 		padding: 1rem;
+		max-width: 100%;
 	}
 
 	h1 {
